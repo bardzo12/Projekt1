@@ -6,7 +6,7 @@ public class Objednávka {
 	
 	private Integer id;
 	
-	private Integer id_objednavka;
+	private Integer id_objednavatel;
 	
 	private Date DatumZadania;
 	
@@ -20,12 +20,12 @@ public class Objednávka {
 		this.id = id;
 	}
 
-	public Integer getId_objednavka() {
-		return id_objednavka;
+	public Integer getId_objednavatel() {
+		return id_objednavatel;
 	}
 
-	public void setId_objednavka(Integer id_objednavka) {
-		this.id_objednavka = id_objednavka;
+	public void setId_objednavatel(Integer id_objednavatel) {
+		this.id_objednavatel = id_objednavatel;
 	}
 
 	public Date getDatumZadania() {

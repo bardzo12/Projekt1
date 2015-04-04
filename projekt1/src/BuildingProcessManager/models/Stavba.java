@@ -6,6 +6,8 @@ public class Stavba {
 	
 	private Integer id;
 	
+	private String Nazov;
+	
 	private Integer id_objednavka;
 	
 	private Stav Stav;
@@ -72,6 +74,14 @@ public class Stavba {
 
 	public void setAdresa(Adresa adresa) {
 		Adresa = adresa;
+	}
+
+	public String getNazov() {
+		return Nazov;
+	}
+
+	public void setNazov(String nazov) {
+		Nazov = nazov;
 	}
 	
 	

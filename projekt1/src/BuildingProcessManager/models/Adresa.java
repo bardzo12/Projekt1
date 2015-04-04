@@ -8,7 +8,7 @@ public class Adresa {
 	
 	private String Mesto;
 	
-	private String PSÈ;
+	private String PSC;
 
 	public Integer getNumber() {
 		return Number;
@@ -34,13 +34,18 @@ public class Adresa {
 		Mesto = mesto;
 	}
 
-	public String getPSÈ() {
-		return PSÈ;
+	public String getPSC() {
+		return PSC;
 	}
 
-	public void setPSÈ(String pSÈ) {
-		PSÈ = pSÈ;
+	public void setPSC(String pSC) {
+		PSC = pSC;
 	}
 	
-
+	public Adresa(Integer Hous_Number, String Ulica, String Mesto, String PSC){
+		setNumber(Hous_Number);
+		setUlica(Ulica);
+		setMesto(Mesto);
+		setPSC(PSC);
+	}
 }
