@@ -34,13 +34,19 @@ import javax.swing.table.AbstractTableModel;
 import com.toedter.calendar.JDateChooser;
 
 import BuildingProcessManager.Runner;
+import BuildingProcessManager.Databaze.ObjednavkaManagment;
+import BuildingProcessManager.Databaze.StavbaManagment;
 import BuildingProcessManager.Databaze.ZamestnanecManagment;
+import BuildingProcessManager.models.Objednavatel;
+import BuildingProcessManager.models.Objednavka;
+import BuildingProcessManager.models.Stavba;
 import BuildingProcessManager.models.Zamestnanec;
 import BuildingProcessManager.models.Adresa;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Frame;
+import java.awt.Rectangle;
 
 import javax.swing.JComboBox;
 
@@ -48,7 +54,7 @@ import java.awt.Component;
 
 import javax.swing.JScrollBar;
 
-public class Frame1 {
+public class Frame {
 
 
 	List<TableData> data = new ArrayList<TableData>();
@@ -59,21 +65,24 @@ public class Frame1 {
     private static Runner spustac;
     public static int podprogram = 0;
     private static JFrame frame = new JFrame();
+    private static JFrame frmBuildingprocessmanager;
 	private static ZamestnanecManagment spustacZ;
+	private static StavbaManagment spustacS;
 	
 	public static void main(String[] args) throws SQLException {
+		System.out.printf("Zmenil sa program");
     	spustacZ = new ZamestnanecManagment();
     	spustac = new Runner();
     	spustacZ=spustac.Start();
+    	spustacS= new StavbaManagment();
     	spustac.setVsetciZamestnanci(spustacZ);
-    	new Frame1();
+    	new Frame();
     	System.out.printf("Tu sme");
     }
 	JDateChooser dateChooser = new JDateChooser();
 	JDateChooser dateChooser_1 = new JDateChooser();
 	JButton btnNewButton = new JButton("OK");
 	JButton button = new JButton("OK");
-	private JTable table_1;
 	 
 	public class EditFrame extends JFrame {
 
@@ -400,7 +409,7 @@ public class Frame1 {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-	        		new Frame1();
+	        		new Frame();
 	        		try {
 						for (Zamestnanec zamestnanec : spustacZ.getAllZamestnanec()) {
 							System.out.println(zamestnanec.getMeno() + ":" + zamestnanec.getPriezvisko()+"-"+zamestnanec.getPost().getNazov());
@@ -640,7 +649,7 @@ public class Frame1 {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-	        		new Frame1();
+	        		new Frame();
 	        		try {
 						for (Zamestnanec zamestnanec : spustacZ.getAllZamestnanec()) {
 							System.out.println(zamestnanec.getMeno() + ":" + zamestnanec.getPriezvisko()+"-"+zamestnanec.getPost().getNazov());
@@ -692,7 +701,7 @@ public class Frame1 {
     /**
      * @wbp.parser.entryPoint
      */
-    public Frame1() {
+    public Frame() {
         for(int i=0;i<spustac.getVsetciZamestnanci().size();i++){
             data.add(new TableData(spustac.getVsetciZamestnanci().get(i).getId(),spustac.getVsetciZamestnanci().get(i).getMeno(), spustac.getVsetciZamestnanci().get(i).getPriezvisko(), spustac.getVsetciZamestnanci().get(i).getZdravotny_stav(),spustac.getVsetciZamestnanci().get(i).getPost().getNazov(),spustac.getVsetciZamestnanci().get(i).getTelefon(),
             		spustac.getVsetciZamestnanci().get(i).getAdresa().getUlica(),Integer.toString(spustac.getVsetciZamestnanci().get(i).getAdresa().getNumber()),spustac.getVsetciZamestnanci().get(i).getAdresa().getMesto(),spustac.getVsetciZamestnanci().get(i).getAdresa().getPSC(), 
@@ -704,19 +713,22 @@ public class Frame1 {
         createUI();
     }
 
+    public void vymaz(){
+    	frmBuildingprocessmanager.dispose();
+    }
     public void createUI() {
        // frame.getContentPane().setSize(new Dimension(100, 100));
         //frame.setMinimumSize(new Dimension(500, 500));
-    	frame = new JFrame();
-        frame.setSize(947,677);
-        frame.getContentPane().setLayout (null);
+    	frmBuildingprocessmanager = new JFrame();
+        frmBuildingprocessmanager.setSize(1215,697);
+        frmBuildingprocessmanager.getContentPane().setLayout (null);
         tabbedPane = new JTabbedPane();
         tabbedPane.setLocation(0, 0);
-        tabbedPane.setSize(1207,785);
+        tabbedPane.setSize(925,617);
         //tabbedPane.setLayout(null);
 
         tabbedPane.add("Zamestnanci", getAllTablePanel());
-        frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
+        frmBuildingprocessmanager.getContentPane().add(tabbedPane, BorderLayout.CENTER);
         
         JPanel panel_1 = new JPanel();
         tabbedPane.addTab("Odborníci", null, panel_1, null);
@@ -753,6 +765,8 @@ public class Frame1 {
         JCheckBox chckbxArchitekt_1 = new JCheckBox("Architekt");
         chckbxArchitekt_1.setBounds(29, 80, 113, 25);
         panel_1.add(chckbxArchitekt_1);
+        
+        JPanel panel_2 = new JPanel();
         
         JButton btnVyhada = new JButton("Vyh\u013Eada\u0165");
         btnVyhada.addActionListener(new ActionListener() {
@@ -818,43 +832,306 @@ public class Frame1 {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+        		String[] header = {"Osobné ID","Meno","Priezvisko","Maliar","Murár","Obkladaè","Betonár","Klampiar","Vodiè(bager)","Vodiè(nakladiak)","Architekt"
+        		};
+        		String[][] obj;
+        		obj = new String [Odbornici.size()][];
+        		for(int i=0;i<Odbornici.size();i++){
+        			obj[i]= new String[11];
+        			System.out.printf("Toto je èíslo ktoré chcem vytlaèi: %d", Odbornici.get(i).getId());
+        			String j = Odbornici.get(i).getId().toString();
+        			obj[i][0]=j;
+        			obj[i][1]=Odbornici.get(i).getMeno();
+        			obj[i][2]=Odbornici.get(i).getPriezvisko();
+        			if(Odbornici.get(i).getMaliar()==true) obj[i][3]="Áno";
+        			else obj[i][3]="Nie";
+        			if(Odbornici.get(i).getMurar()==true) obj[i][4]="Áno";
+        			else obj[i][4]="Nie";
+        			if(Odbornici.get(i).getObkladac()==true) obj[i][5]="Áno";
+        			else obj[i][5]="Nie";
+        			if(Odbornici.get(i).getBetonar()==true) obj[i][6]="Áno";
+        			else obj[i][6]="Nie";
+        			if(Odbornici.get(i).getKlampiar()==true) obj[i][7]="Áno";
+        			else obj[i][7]="Nie";
+        			if(Odbornici.get(i).getVodic_bager()==true) obj[i][8]="Áno";
+        			else obj[i][8]="Nie";
+        			if(Odbornici.get(i).getVodic_nakladne()==true) obj[i][9]="Áno";
+        			else obj[i][9]="Nie";
+        			if(Odbornici.get(i).getArchitekt()==true) obj[i][10]="Áno";
+        			else obj[i][10]="Nie";
+        			
+        		}
+        		
+        		JPanel panel = new JPanel();
+        		panel_1.setLayout(null);
+        		// constructor of JTable with a fix number of objects
+        		JTable table = new JTable(obj, header);
+        		//panel.add(new JScrollPane(table));
+        		JScrollPane scroll = 
+                		new JScrollPane(table);
+                scroll.setBounds(12, 13, 750, 750);
+                panel_2.add(scroll);
+                panel_2.setVisible(true);
+                panel_2.add(panel);
+                panel_2.setVisible(true);
         		
         	}
         });
         btnVyhada.setBounds(162, 80, 97, 25);
         panel_1.add(btnVyhada);
         
-        table_1 = new JTable();
-        table_1.setBounds(55, 160, 672, 402);
-        panel_1.add(table_1);
+        panel_2.setBounds(29, 141, 837, 420);
+        panel_1.add(panel_2);
         
         JPanel panel = new JPanel();
         tabbedPane.addTab("Stavby", null, panel, null);
         panel.setLayout(null);
+        JComboBox<String> comboBox_1 = new JComboBox<>();
+        
+        ObjednavkaManagment spustacO = new ObjednavkaManagment();
+		List<Objednavka> objednavkyNevybavene = new LinkedList<Objednavka> ();
+		try {
+			for (Objednavka objednavka : spustacO.getObjednavkyNevybavene()) {
+				comboBox_1.addItem("("+objednavka.getId()+")" + " "+spustacO.getObjednavatel(objednavka.getObjednavatel_id().toString()).getMeno()+" "+objednavka.getDatumZadania());
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
         
         JButton btnNewButton_3 = new JButton("Pridaj stavbu");
-        btnNewButton_3.setBounds(12, 55, 213, 68);
+        btnNewButton_3.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        		Object vybraty = comboBox_1.getSelectedItem();
+        		String pomocna = vybraty.toString();
+        		int i = pomocna.indexOf(')');
+        		pomocna=pomocna.substring(1, i);
+        		NewStavba okno = new NewStavba(Integer.parseInt(pomocna));
+        		
+        	}
+        });
+        btnNewButton_3.setBounds(618, 75, 213, 42);
         panel.add(btnNewButton_3);
+        
+        JComboBox<String> comboBox = new JComboBox<>();
+        
         
         JButton btnNewButton_4 = new JButton("Preh\u013Ead stavby");
         btnNewButton_4.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent arg0) {
+        		Object vybraty = comboBox.getSelectedItem();
+        		String pomocna = vybraty.toString();
+        		int i = pomocna.indexOf(')');
+        		pomocna=pomocna.substring(1, i);
+        		try {
+					for (Stavba stavba : spustacS.getAllStavby())
+						if(stavba.getId()==Integer.parseInt(pomocna)){
+							List<Zamestnanec> zamestnanci = new LinkedList<Zamestnanec> ();
+							zamestnanci = spustacS.getZamestnanciStavby(pomocna);
+							Objednavatel objednavatel = new Objednavatel();
+							objednavatel = spustacS.getObjednavatel(pomocna);
+							Objednavka objednavka = new Objednavka();
+							objednavka = spustacS.getObjednavka(pomocna);
+							Double cena = spustacS.StavbaAktualnaCena(pomocna);
+							Zamestnanec veduci = spustacS.VedúciStavby(pomocna);
+							Double cenavsetko = spustacS.StavbaCena(pomocna);
+							new ViewStavba(stavba,objednavatel,objednavka,cena,cenavsetko,veduci,zamestnanci);
+						}
+				} catch (NumberFormatException | SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        		
+        		//String Vybrane = comboBox.
         	}
         });
-        btnNewButton_4.setBounds(12, 136, 213, 68);
+        btnNewButton_4.setBounds(618, 143, 213, 42);
         panel.add(btnNewButton_4);
         
-        JButton btnNewButton_5 = new JButton("Prideli\u0165 zamestnancov");
-        btnNewButton_5.setBounds(12, 217, 213, 68);
-        panel.add(btnNewButton_5);
         
-        JComboBox comboBox = new JComboBox();
-        comboBox.setBounds(237, 136, 185, 68);
+        try {
+			for (Stavba stavba : spustacS.getAllStavby()) {
+				comboBox.addItem("("+stavba.getId()+") "+stavba.getNazov());
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        comboBox.setBounds(230, 143, 367, 42);
         panel.add(comboBox);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setTitle("Table Model Example.");
+        
+        comboBox_1.setBounds(230, 69, 367, 46);
+        panel.add(comboBox_1);
+        
+        JLabel lblVyberObjednvku = new JLabel("Vyber objedn\u00E1vku:");
+        lblVyberObjednvku.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        lblVyberObjednvku.setBounds(12, 77, 193, 46);
+        panel.add(lblVyberObjednvku);
+        
+        JLabel lblVyberStavbu = new JLabel("Vyber stavbu:");
+        lblVyberStavbu.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        lblVyberStavbu.setBounds(12, 139, 193, 46);
+        panel.add(lblVyberStavbu);
+        
+        try {
+			for (Stavba stavba : spustacS.getAllStavby()) {
+				comboBox.addItem("("+stavba.getId()+") "+stavba.getNazov());
+			}
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        
+        JPanel panel_3 = new JPanel();
+        tabbedPane.addTab("Etapy", null, panel_3, null);
+        panel_3.setLayout(null);
+        
+        JComboBox<String> comboBox_3 = new JComboBox<>();
+        try {
+			for (Stavba stavba : spustacS.getAllStavby()) {
+				comboBox_3.addItem("("+stavba.getId()+") "+stavba.getNazov());
+			}
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        comboBox_3.setBounds(182, 54, 346, 29);
+        panel_3.add(comboBox_3);
+        
+        JLabel lblVyberStavbu_1 = new JLabel("Vyber stavbu");
+        lblVyberStavbu_1.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        lblVyberStavbu_1.setBounds(40, 54, 130, 30);
+        panel_3.add(lblVyberStavbu_1);
+        
+        JLabel lblAktulnaEtapa = new JLabel("Aktu\u00E1lna etapa");
+        lblAktulnaEtapa.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        lblAktulnaEtapa.setBounds(40, 96, 153, 30);
+        panel_3.add(lblAktulnaEtapa);
+        
+        JLabel lblCena = new JLabel("Cena:");
+        lblCena.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        lblCena.setBounds(40, 164, 130, 30);
+        panel_3.add(lblCena);
+        
+        JLabel lblDtumZaatia = new JLabel("D\u00E1tum za\u010Datia:");
+        lblDtumZaatia.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        lblDtumZaatia.setBounds(40, 203, 130, 30);
+        panel_3.add(lblDtumZaatia);
+        
+        JLabel lblPracovnci = new JLabel("Pracovn\u00EDci:");
+        lblPracovnci.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        lblPracovnci.setBounds(40, 241, 130, 30);
+        panel_3.add(lblPracovnci);
+        
+        JScrollPane scrollPane = new JScrollPane((Component) null);
+        scrollPane.setBounds(40, 273, 370, 301);
+        panel_3.add(scrollPane);
+        
+        JLabel lblUkonenEtapy = new JLabel("Ukon\u010Den\u00E9 etapy");
+        lblUkonenEtapy.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        lblUkonenEtapy.setBounds(449, 96, 153, 30);
+        panel_3.add(lblUkonenEtapy);
+        
+        JLabel lblCelkovCena = new JLabel("Celkov\u00E1 cena:");
+        lblCelkovCena.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        lblCelkovCena.setBounds(642, 97, 130, 30);
+        panel_3.add(lblCelkovCena);
+        
+        JLabel label = new JLabel("Cena:");
+        label.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        label.setBounds(449, 164, 130, 30);
+        panel_3.add(label);
+        
+        JComboBox comboBox_2 = new JComboBox();
+        comboBox_2.setBounds(449, 139, 153, 22);
+        panel_3.add(comboBox_2);
+        
+        JButton btnNewButton_5 = new JButton("Vybra\u0165");
+        btnNewButton_5.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        	}
+        });
+        btnNewButton_5.setBounds(634, 138, 97, 25);
+        panel_3.add(btnNewButton_5);
+        
+        JLabel label_1 = new JLabel("D\u00E1tum za\u010Datia:");
+        label_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        label_1.setBounds(449, 203, 130, 30);
+        panel_3.add(label_1);
+        
+        JLabel label_2 = new JLabel("Pracovn\u00EDci:");
+        label_2.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        label_2.setBounds(449, 241, 130, 30);
+        panel_3.add(label_2);
+        
+        JScrollPane scrollPane_1 = new JScrollPane((Component) null);
+        scrollPane_1.setBounds(449, 273, 370, 301);
+        panel_3.add(scrollPane_1);
+        
+        JButton btnPridajEtapu = new JButton("Pridaj etapu");
+        btnPridajEtapu.setBounds(734, 56, 130, 25);
+        panel_3.add(btnPridajEtapu);
+        lblAktulnaEtapa.setVisible(false);
+		lblCena.setVisible(false);
+		lblDtumZaatia.setVisible(false);
+		lblPracovnci.setVisible(false);
+		scrollPane.setVisible(false);
+		scrollPane_1.setVisible(false);
+		lblUkonenEtapy.setVisible(false);
+		label.setVisible(false);
+		label_1.setVisible(false);
+		label_2.setVisible(false);
+		lblUkonenEtapy.setVisible(false);
+		lblCelkovCena.setVisible(false);
+		comboBox_2.setVisible(false);
+		btnNewButton_5.setVisible(false);
+		
+		
+        JButton btnOk = new JButton("OK");
+        btnOk.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		lblAktulnaEtapa.setVisible(true);
+        		lblCena.setVisible(true);
+        		lblDtumZaatia.setVisible(true);
+        		lblPracovnci.setVisible(true);
+        		scrollPane.setVisible(true);
+        		scrollPane_1.setVisible(true);
+        		lblUkonenEtapy.setVisible(true);
+        		label.setVisible(true);
+        		label_1.setVisible(true);
+        		label_2.setVisible(true);
+        		lblUkonenEtapy.setVisible(true);
+        		lblCelkovCena.setVisible(true);
+        		comboBox_2.setVisible(true);
+        		btnNewButton_5.setVisible(true);
+        		
+        		Object vybraty = comboBox_3.getSelectedItem();
+        		String pomocna = vybraty.toString();
+        		int i = pomocna.indexOf(')');
+        		pomocna=pomocna.substring(1, i);
+        		
+        		
+        	}
+        });
+        btnOk.setBounds(588, 56, 97, 25);
+        panel_3.add(btnOk);
+        
+        
+        JButton btnAktualizuj = new JButton("Aktualizuj");
+        btnAktualizuj.setBounds(982, 40, 97, 25);
+        frmBuildingprocessmanager.getContentPane().add(btnAktualizuj);
+        btnAktualizuj.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		vymaz();
+        		new Frame();
+        	}
+        });
+        frmBuildingprocessmanager.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frmBuildingprocessmanager.setTitle("BuildingProcessManager");
         //frame.pack();
-        frame.setVisible(true);
+        frmBuildingprocessmanager.setVisible(true);
       //while(program!=1)
     }
     
@@ -905,7 +1182,7 @@ public class Frame1 {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-        		new Frame1();
+        		new Frame();
         		System.out.printf("\n\n\n\n Tento som si vybral: %d",Integer.parseInt(pomocna));
         	}
         });
@@ -979,7 +1256,7 @@ class AllTableModel extends AbstractTableModel {
 
     List<TableData> tableData = new ArrayList<TableData>();
 
-    Object[] columnNames = {"Meno", "Priezvisko", "Post", "Telefón"};
+    Object[] columnNames = {"Osobné ID zamestnanca","Meno", "Priezvisko", "Post", "Telefón"};
 
     public AllTableModel(List<TableData> data) {
 
@@ -1010,14 +1287,16 @@ class AllTableModel extends AbstractTableModel {
         TableData data = tableData.get(rowIndex);
         switch (columnIndex) {
         case 0:
-            return data.getMeno();
+            return data.getId().toString();
         case 1:
-            return data.getPriezvisko();
+            return data.getMeno();
         case 2:
-            return data.getPost();
+            return data.getPriezvisko();
         case 3:
-            return data.getTelefon();
+            return data.getPost();
         case 4:
+            return data.getTelefon();
+        case 5:
             return data.getUlica();
         default:
             return null;

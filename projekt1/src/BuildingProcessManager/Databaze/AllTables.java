@@ -35,6 +35,28 @@ public abstract class AllTables {
 		}
 	}
 	
+	protected Object selectQuerys(String queryString) throws SQLException{
+		Object result = new Object();
+		Connection conn = null;
+		Statement stmt = null;
+		Properties connectionProps = new Properties();
+	    connectionProps.put("user", "postgres");
+	    connectionProps.put("password", "dbs2015");
+	    String connectionString = "jdbc:postgresql://localhost:5432/postgres";
+	    try {
+			conn = DriverManager.getConnection(connectionString, connectionProps);
+			stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(queryString);
+			return processRow(rs);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			stmt.close();
+			return result;
+		}
+	}
+	
 	protected abstract Object processRow(ResultSet rs) throws SQLException;
 
 }

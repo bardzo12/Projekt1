@@ -32,7 +32,8 @@ public class ZamestnanecManagment extends AllTables{
 	public List<Zamestnanec> getAllZamestnanec() throws SQLException
 	{
 		return(selectQuery("SELECT * FROM Zamestnanci z "
-				+ "JOIN Post p ON z.Post_id=p.id"));
+				+ "JOIN Post p ON z.Post_id=p.id"
+				+ " order by z.priezvisko,z.meno"));
 	}
 	
 	public List<Zamestnanec> getAllRobotnik() throws SQLException
@@ -53,7 +54,8 @@ public class ZamestnanecManagment extends AllTables{
 	    try {
 			conn = DriverManager.getConnection(connectionString, connectionProps);
 			stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM zamestnanci");
+			ResultSet rs = stmt.executeQuery("SELECT * FROM zamestnanci"
+					+ " order by priezvisko,meno");
 			while(rs.next()){
 				//result.add(new Zamestnanec(rs.getString("Meno"),rs.getString("Priezvisko")));
 			}
@@ -175,7 +177,7 @@ public class ZamestnanecManagment extends AllTables{
 	    connectionProps.put("user", "postgres");
 	    connectionProps.put("password", "dbs2015");
 	    String connectionString = "jdbc:postgresql://localhost:5432/postgres";
-	    createStatementString = "DELETE FROM zamestnanci where id = "+Koho.toString();
+	    createStatementString = "DELETE FROM zamestnanci CASCADE where id = "+Koho.toString();
 	    conn = DriverManager.getConnection(connectionString, connectionProps);
 		conn.setAutoCommit(true);
 	    stmt = (PreparedStatement) conn.prepareStatement(createStatementString);

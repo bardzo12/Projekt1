@@ -1,6 +1,7 @@
 package BuildingProcessManager.models;
 
-import java.sql.Date;
+import java.util.Date;
+
 
 public class Stavba {
 	
@@ -10,11 +11,11 @@ public class Stavba {
 	
 	private Integer id_objednavka;
 	
-	private Stav Stav;
+	private Boolean Stav;
 	
 	private Date Zaciatok;
 	
-	private Date PredpokladanyKoniec;
+	private Date Predpokladany_koniec;
 	
 	private Date Koniec;
 	
@@ -32,15 +33,15 @@ public class Stavba {
 		return id_objednavka;
 	}
 
-	public void setId_objednavka(Integer id_objednavka) {
-		this.id_objednavka = id_objednavka;
+	public void setId_objednavka(Integer objednavka_id) {
+		this.id_objednavka = objednavka_id;
 	}
 
-	public Stav getStav() {
+	public Boolean getStav() {
 		return Stav;
 	}
 
-	public void setStav(Stav stav) {
+	public void setStav(Boolean stav) {
 		Stav = stav;
 	}
 
@@ -48,16 +49,16 @@ public class Stavba {
 		return Zaciatok;
 	}
 
-	public void setZaciatok(Date zaciatok) {
-		Zaciatok = zaciatok;
+	public void setZaciatok(Date datumStart) {
+		Zaciatok = datumStart;
 	}
 
-	public Date getPredpokladanyKoniec() {
-		return PredpokladanyKoniec;
+	public Date getPredpokladany_koniec() {
+		return Predpokladany_koniec;
 	}
 
-	public void setPredpokladanyKoniec(Date predpokladanyKoniec) {
-		PredpokladanyKoniec = predpokladanyKoniec;
+	public void setPredpokladany_koniec(Date predpokladany_koniec) {
+		Predpokladany_koniec = predpokladany_koniec;
 	}
 
 	public Date getKoniec() {
@@ -84,6 +85,19 @@ public class Stavba {
 		Nazov = nazov;
 	}
 	
+	public Stavba(Integer id, String nazov, Integer objednavka_id, Boolean stav, Date zaciatok, Date koniec, Date predpokladany_koniec, String ulica, String mesto, String psc){
+		setId(id);
+		setNazov(nazov);
+		setId_objednavka(objednavka_id);
+		setStav(stav);
+		setZaciatok(zaciatok);
+		setKoniec(koniec);
+		setPredpokladany_koniec(predpokladany_koniec);
+		Adresa adresa = new Adresa(null,ulica,mesto,psc);
+		setAdresa(adresa);
+	}
 	
+	public Stavba(){
+	}
 
 }

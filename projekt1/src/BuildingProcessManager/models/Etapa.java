@@ -10,7 +10,7 @@ public class Etapa {
 	
 	private Date Datum;
 	
-	private Stav Stav;
+	private String Stav;
 
 	public Integer getId() {
 		return id;
@@ -36,11 +36,11 @@ public class Etapa {
 		Datum = datum;
 	}
 
-	public Stav getStav() {
+	public String getStav() {
 		return Stav;
 	}
 
-	public void setStav(Stav stav) {
+	public void setStav(String stav) {
 		Stav = stav;
 	}
 	

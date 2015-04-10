@@ -4,7 +4,7 @@ public class Objednavatel {
 	
 	private Integer id;
 	
-	private String Name;
+	private String Meno;
 	
 	private String ICO;
 	
@@ -22,12 +22,12 @@ public class Objednavatel {
 		this.id = id;
 	}
 
-	public String getName() {
-		return Name;
+	public String getMeno() {
+		return Meno;
 	}
 
-	public void setName(String name) {
-		Name = name;
+	public void setMeno(String meno) {
+		Meno = meno;
 	}
 
 	public String getICO() {
@@ -62,5 +62,19 @@ public class Objednavatel {
 		Adresa = adresa;
 	}
 	
+	public Objednavatel(Integer id, String meno,String ico, String dic, String e_mail, Adresa adresa){
+		
+		setId(id);
+		setMeno(meno);
+		setICO(ico);
+		setDIC(dic);
+		setE_mail(e_mail);
+		setAdresa(adresa);
+		
+	}
+	
+	public Objednavatel(){
+		
+	}
 
 }

@@ -38,6 +38,8 @@ public class Zamestnanec {
 	
 	private String Telefon;
 	
+	private String Viem;
+	
 	private Set<Etapa> etapy;
 	
 	private Adresa Adresa;
@@ -185,6 +187,54 @@ public class Zamestnanec {
 	public void setKoniecPN(Date koniecPN) {
 		KoniecPN = koniecPN;
 	}
+	
+	public String getViem() {
+		return Viem;
+	}
+
+	public void setViem() {
+		int pridany=1;
+		if(Maliar==true) {
+			if(pridany ==1) Viem = new String();
+			Viem = Viem + "Maliar,";
+			pridany++;
+		}
+		if(Murar==true) {
+			if(pridany ==1) Viem = new String();
+			Viem = Viem + "Murár,";
+			pridany++;
+		}
+		if(Obkladac==true) {
+			if(pridany ==1) Viem = new String();
+			Viem = Viem + "Obkladac,";
+			pridany++;
+		}
+		if(Betonar==true) {
+			if(pridany ==1) Viem = new String();
+			Viem = Viem + "Betonár,";
+			pridany++;
+		}
+		if(Klampiar==true) {
+			if(pridany ==1) Viem = new String();
+			Viem = Viem + "Klampiar,";
+			pridany++;
+		}
+		if(Vodic_bager==true) {
+			if(pridany ==1) Viem = new String();
+			Viem = Viem + "Vodiè(bager),";
+			pridany++;
+		}
+		if(Vodic_nakladne==true) {
+			if(pridany ==1) Viem = new String();
+			Viem = Viem + "Vodic(nákladné),";
+			pridany++;
+		}
+		if(Architekt==true) {
+			if(pridany ==1) Viem = new String();
+			Viem = Viem + "Architekt";
+			pridany++;
+		}
+	}
 
 	public Zamestnanec(Integer Id, String Meno, String Priezvisko, Boolean Zdravotny_stav, String Number, Adresa Adresa, Post Post, Boolean Maliar, Boolean Murar, Boolean Obkladac, Boolean Betonar, Boolean Klampiar, Boolean Vodic_bager, Boolean Vodic_nakladne, Boolean Architekt, Date ZaciatokPN, Date KoniecPN){
 		setId(Id);
@@ -207,7 +257,29 @@ public class Zamestnanec {
 		setArchitekt(Architekt);
 	}
 
+	public Zamestnanec(String meno, String priezvisko){
+		
+		setMeno(meno);
+		setPriezvisko(priezvisko);
+	}
+	
+	public Zamestnanec(Integer id, String meno, String priezvisko,Boolean Maliar, Boolean Murar, Boolean Obkladac, Boolean Betonar, Boolean Klampiar, Boolean Vodic_bager, Boolean Vodic_nakladne, Boolean Architekt){
+		setId(id);
+		setMeno(meno);
+		setPriezvisko(priezvisko);
+		setMaliar(Maliar);
+		setMurar(Murar);
+		setObkladac(Obkladac);
+		setBetonar(Betonar);
+		setKlampiar(Klampiar);
+		setVodic_bager(Vodic_bager);
+		setVodic_nakladne(Vodic_nakladne);
+		setArchitekt(Architekt);
+		setViem();
+	}
 	public Zamestnanec() {
 		// TODO Auto-generated constructor stub
 	}
+
+	
 }

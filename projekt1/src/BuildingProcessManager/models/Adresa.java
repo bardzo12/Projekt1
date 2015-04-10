@@ -48,4 +48,10 @@ public class Adresa {
 		setMesto(Mesto);
 		setPSC(PSC);
 	}
+	
+	public Adresa(String Ulica, String Mesto, String PSC){
+		setUlica(Ulica);
+		setMesto(Mesto);
+		setPSC(PSC);
+	}
 }

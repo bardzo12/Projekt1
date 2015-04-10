@@ -6,7 +6,6 @@ import java.util.List;
 
 import BuildingProcessManager.Databaze.ZamestnanecManagment;
 import BuildingProcessManager.models.*;
-import GUI.Frame1;
 
 public class Runner {
 	public static ZamestnanecManagment Program;
@@ -27,6 +26,7 @@ public class Runner {
 	public void insertZamestanec(Zamestnanec Builder) throws SQLException{
 		Program.insertZamestnanec(Builder);
 	}
+	
 	
 	
 	/*public static void main(String[] args) throws SQLException {
