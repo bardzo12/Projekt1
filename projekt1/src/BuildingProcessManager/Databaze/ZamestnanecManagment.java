@@ -68,6 +68,40 @@ public class ZamestnanecManagment extends AllTables{
 	    return result;
 	}
 	
+	public void updateZamestnanec(String tohto, String Post) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		
+		Properties connectionProps = new Properties();
+	    connectionProps.put("user", "postgres");
+	    connectionProps.put("password", "dbs2015");
+	    String connectionString = "jdbc:postgresql://localhost:5432/postgres";
+	    
+		try {
+			conn = DriverManager.getConnection(connectionString, connectionProps);
+			conn.setAutoCommit(true);
+			String updateStatementString = new String();
+				updateStatementString= "UPDATE zamestnanci SET post_id = " + Post + " where id = " + tohto ;
+				stmt  =  conn.prepareStatement(updateStatementString);
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			if (conn != null) {
+	            try {
+	            	System.err.println(e.getMessage());
+	            	System.err.print("Transaction is being rolled back");
+	                conn.rollback();
+	            } catch(SQLException excep) {
+	                
+	            }
+	        }
+		} finally {
+			if(stmt != null){
+				stmt.close();
+			}
+		}
+		
+	}
+	
 	public void updateZamestnanec(Zamestnanec Kto, Zamestnanec Novy) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -112,6 +146,30 @@ public class ZamestnanecManagment extends AllTables{
 				stmt.close();
 			}
 		}
+	}
+	
+	
+	
+	/*
+	 * SELECT z.id,z.meno,z.priezvisko FROM zamestnanci z WHERE z.id NOT IN (
+select z.id from cena c
+JOIN etapa e ON e.id=c.id_etapa
+JOIN zamestnanci z ON z.id=c.id_zamestnanec
+where e.stav = true and z.zdravotny_stav=true)
+	
+	 */
+	
+	@SuppressWarnings("unchecked")
+	public List<Zamestnanec> getAllFree() throws SQLException
+	{
+		return(selectQuery("SELECT p.nazov,z.id,meno,priezvisko,zdravotny_stav,telefon,maliar,murar,obkladac,betonar,klampiar,vodic_bager,vodic_nakladne,architekt,zaciatokPN,koniecPN,house_number,ulica,mesto,psc FROM zamestnanci z "
+				+ "JOIN post p ON p.id=z.post_id "
+				+ "WHERE z.id NOT IN ( "
+				+ "select z.id from cena c "
+				+ "JOIN etapa e ON e.id=c.id_etapa "
+				+ "JOIN zamestnanci z ON z.id=c.id_zamestnanec "
+				+ "JOIN post p ON p.id=z.post_id "
+				+ "where e.stav = true and z.zdravotny_stav=true)"));
 	}
 	
 	public void insertZamestnanec(Zamestnanec Zamestnanec) throws SQLException {

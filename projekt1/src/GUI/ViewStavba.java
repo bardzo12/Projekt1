@@ -35,7 +35,7 @@ public class ViewStavba extends JFrame {
 	public ViewStavba(Stavba stavba, Objednavatel objednavatel, Objednavka objednavka, Double cena, Double cenavsetko, Zamestnanec veduci, List<Zamestnanec> zamestnanci) {
 		new JFrame(stavba.getNazov());
 		setVisible(true);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 1290, 741);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));

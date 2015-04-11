@@ -1,6 +1,7 @@
 package BuildingProcessManager.models;
 
-import java.sql.Date;
+import java.util.Date;
+
 
 public class Etapa {
 	
@@ -10,7 +11,7 @@ public class Etapa {
 	
 	private Date Datum;
 	
-	private String Stav;
+	private Boolean Stav;
 
 	public Integer getId() {
 		return id;
@@ -36,13 +37,22 @@ public class Etapa {
 		Datum = datum;
 	}
 
-	public String getStav() {
+	public Boolean getStav() {
 		return Stav;
 	}
 
-	public void setStav(String stav) {
+	public void setStav(Boolean stav) {
 		Stav = stav;
 	}
 	
+	public Etapa(Integer id, Integer id_stavba, Date datum, Boolean stav){
+		setId(id);
+		setId_stavba(id_stavba);
+		setDatum(datum);
+		setStav(stav);
+	}
+
+	public Etapa() {
+	}
 
 }

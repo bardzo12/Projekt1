@@ -26,7 +26,8 @@ public class StavbaManagment extends AllTables{
 	@SuppressWarnings("unchecked")
 	public List<Stavba> getAllStavby() throws SQLException
 	{
-		return(selectQuery("SELECT * FROM stavba"));
+		return(selectQuery("SELECT * FROM stavba"
+				+ " WHERE stav=false"));
 	}
 
 	@Override
@@ -54,10 +55,12 @@ public class StavbaManagment extends AllTables{
 		ResultSet rs = stmt.executeQuery("select ob.id,ob.meno,ob.ico,ob.dic,ob.e_mail,ob.house_number,ob.ulica,ob.mesto,ob.psc from stavba s"
 											+" JOIN objednavka o ON o.id=s.objednavka_id"
 											+" JOIN objednavatel ob ON ob.id=o.objednavatel_id"
-											+" where ob.id = " + toto);
+											+" where s.id = " + toto);
 		while(rs.next())
 	    result.add(new Objednavatel(rs.getInt("id"),rs.getString("meno"),rs.getString("ico"),rs.getString("dic"),rs.getString("e_mail"),new Adresa(rs.getInt("house_number"),rs.getString("ulica"),rs.getString("mesto"),rs.getString("PSC"))));
-		return result.get(0);
+		if(result.size()>0)
+			return result.get(0);
+		else return null;
 	}
 	
 	public Objednavka getObjednavka(String toto) throws SQLException
@@ -74,10 +77,12 @@ public class StavbaManagment extends AllTables{
 		ResultSet rs = stmt.executeQuery("select o.id,o.datum_zadania,o.ukoncena,o.objednavatel_id,o.stav_id from stavba s "
 										+"JOIN objednavka o ON o.id=s.objednavka_id "
 										+"JOIN objednavatel ob ON ob.id=o.objednavatel_id "
-											+"where ob.id = " + toto);
+											+"where s.id = " + toto);
 		while(rs.next())
 	    result.add(new Objednavka(rs.getInt("id"),rs.getInt("objednavatel_id"),rs.getDate("datum_zadania"),rs.getBoolean("ukoncena"),rs.getInt("stav_id")));
-		return result.get(0);
+		if(result.size()>0)
+			return result.get(0);
+		else return null;
 	}
 	
 	public Double StavbaAktualnaCena(String toto) throws SQLException
@@ -166,15 +171,17 @@ public class StavbaManagment extends AllTables{
 	    conn = DriverManager.getConnection(connectionString, connectionProps);
 		stmt = conn.createStatement();
 		ResultSet rs = stmt.executeQuery("SELECT z.id,z.meno,z.priezvisko,z.maliar,z.murar,z.obkladac,z.betonar,z.klampiar,z.vodic_bager,z.vodic_nakladne,z.architekt FROM stavba s "+
-											"LEFT JOIN etapa e ON e.id_stavba=s.id "+
-											"LEFT JOIN cena c ON c.id_etapa=e.id "+
-											"LEFT JOIN zamestnanci z ON z.id=c.id_zamestnanec "+
+											" JOIN etapa e ON e.id_stavba=s.id "+
+											" JOIN cena c ON c.id_etapa=e.id "+
+											" JOIN zamestnanci z ON z.id=c.id_zamestnanec "+
 											"where s.id = "+toto+
 											"GROUP BY z.id,z.meno,z.priezvisko,z.maliar,z.murar,z.obkladac,z.betonar,z.klampiar,z.vodic_bager,z.vodic_nakladne,z.architekt");
 		while(rs.next())
 	    result.add(new Zamestnanec(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getBoolean(4),rs.getBoolean(5),rs.getBoolean(6),rs.getBoolean(7),rs.getBoolean(8),rs.getBoolean(9),rs.getBoolean(10),rs.getBoolean(11)));
 		return result;
 	}
+	
+	
 	
 	public void insertStavba(Stavba Stavba) throws SQLException {
 		PreparedStatement stmt = null;

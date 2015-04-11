@@ -2,11 +2,11 @@ package BuildingProcessManager.models;
 
 public class Cena {
 	
-	private Integer Hodinovka;
+	private Double Hodinovka;
 	
-	private Integer PocetHodin;
+	private Double PocetHodin;
 	
-	private Integer Hodnota;
+	private Double Hodnota;
 	
 	private Integer Etapa;
 	
@@ -14,23 +14,23 @@ public class Cena {
 	
 	private Integer id_zamestnanec;
 
-	public Integer getHodinovka() {
+	public Double getHodinovka() {
 		return Hodinovka;
 	}
 
-	public void setHodinovka(Integer hodinovka) {
+	public void setHodinovka(Double hodinovka) {
 		Hodinovka = hodinovka;
 	}
 
-	public Integer getPocetHodin() {
+	public Double getPocetHodin() {
 		return PocetHodin;
 	}
 
-	public void setPocetHodin(Integer pocetHodin) {
+	public void setPocetHodin(Double pocetHodin) {
 		PocetHodin = pocetHodin;
 	}
 
-	public Integer getHodnota() {
+	public Double getHodnota() {
 		return Hodnota;
 	}
 
@@ -62,10 +62,17 @@ public class Cena {
 		this.id_zamestnanec = id_zamestnanec;
 	}
 
-	public void setHodnota(Integer hodnota) {
+	public void setHodnota(Double hodnota) {
 		Hodnota = hodnota;
 	}
 	
+	
+	public Cena(Double hodinovka, Double pocethodin, Integer id_etapa,Integer id_zamestnanec){
+		setHodinovka(hodinovka);
+		setPocetHodin(pocethodin);
+		setId_etapa(id_etapa);
+		setId_zamestnanec(id_zamestnanec);
+	}
 	
 
 }

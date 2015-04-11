@@ -11,6 +11,7 @@ import java.util.Properties;
 
 public abstract class AllTables {
 	
+	
 	protected List selectQuery(String queryString) throws SQLException{
 		List result = new LinkedList();
 		Connection conn = null;

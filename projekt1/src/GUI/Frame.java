@@ -34,14 +34,17 @@ import javax.swing.table.AbstractTableModel;
 import com.toedter.calendar.JDateChooser;
 
 import BuildingProcessManager.Runner;
+import BuildingProcessManager.Databaze.EtapaManagment;
 import BuildingProcessManager.Databaze.ObjednavkaManagment;
 import BuildingProcessManager.Databaze.StavbaManagment;
 import BuildingProcessManager.Databaze.ZamestnanecManagment;
+import BuildingProcessManager.models.Etapa;
 import BuildingProcessManager.models.Objednavatel;
 import BuildingProcessManager.models.Objednavka;
 import BuildingProcessManager.models.Stavba;
 import BuildingProcessManager.models.Zamestnanec;
 import BuildingProcessManager.models.Adresa;
+import BuildingProcessManager.models.ZamestnanecEtapy;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -83,6 +86,10 @@ public class Frame {
 	JDateChooser dateChooser_1 = new JDateChooser();
 	JButton btnNewButton = new JButton("OK");
 	JButton button = new JButton("OK");
+	JScrollPane scrollPane = new JScrollPane((Component) null);
+	JScrollPane scrollPane_1 = new JScrollPane((Component) null);
+	List<Etapa> etapy = new LinkedList<>();
+	List<Etapa> etapyu = new LinkedList<>();
 	 
 	public class EditFrame extends JFrame {
 
@@ -464,7 +471,7 @@ public class Frame {
 		//private static JFrame frame = new JFrame();
 		 
 		public InsertFrame() throws InterruptedException {
-			setDefaultCloseOperation(JDialog.EXIT_ON_CLOSE);
+			setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			setBounds(100, 100, 730, 515);
 			contentPane = new JPanel();
 			contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -649,7 +656,7 @@ public class Frame {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-	        		new Frame();
+	        		//new Frame();
 	        		try {
 						for (Zamestnanec zamestnanec : spustacZ.getAllZamestnanec()) {
 							System.out.println(zamestnanec.getMeno() + ":" + zamestnanec.getPriezvisko()+"-"+zamestnanec.getPost().getNazov());
@@ -1025,9 +1032,7 @@ public class Frame {
         lblPracovnci.setBounds(40, 241, 130, 30);
         panel_3.add(lblPracovnci);
         
-        JScrollPane scrollPane = new JScrollPane((Component) null);
-        scrollPane.setBounds(40, 273, 370, 301);
-        panel_3.add(scrollPane);
+        
         
         JLabel lblUkonenEtapy = new JLabel("Ukon\u010Den\u00E9 etapy");
         lblUkonenEtapy.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -1044,17 +1049,9 @@ public class Frame {
         label.setBounds(449, 164, 130, 30);
         panel_3.add(label);
         
-        JComboBox comboBox_2 = new JComboBox();
+        JComboBox<String> comboBox_2 = new JComboBox<>();
         comboBox_2.setBounds(449, 139, 153, 22);
         panel_3.add(comboBox_2);
-        
-        JButton btnNewButton_5 = new JButton("Vybra\u0165");
-        btnNewButton_5.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent arg0) {
-        	}
-        });
-        btnNewButton_5.setBounds(634, 138, 97, 25);
-        panel_3.add(btnNewButton_5);
         
         JLabel label_1 = new JLabel("D\u00E1tum za\u010Datia:");
         label_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -1066,11 +1063,134 @@ public class Frame {
         label_2.setBounds(449, 241, 130, 30);
         panel_3.add(label_2);
         
-        JScrollPane scrollPane_1 = new JScrollPane((Component) null);
-        scrollPane_1.setBounds(449, 273, 370, 301);
-        panel_3.add(scrollPane_1);
+        
+        JLabel lblNewLabel_2 = new JLabel();
+        lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        lblNewLabel_2.setBounds(182, 167, 153, 24);
+        panel_3.add(lblNewLabel_2);
+        
+        JLabel label_3 = new JLabel();
+        label_3.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        label_3.setBounds(182, 206, 153, 24);
+        panel_3.add(label_3);
+        
+        JLabel label_4 = new JLabel();
+        label_4.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        label_4.setBounds(182, 244, 153, 24);
+        panel_3.add(label_4);
+        
+        JLabel label_5 = new JLabel();
+        label_5.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        label_5.setBounds(619, 167, 153, 24);
+        panel_3.add(label_5);
+        
+        JLabel label_6 = new JLabel();
+        label_6.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        label_6.setBounds(619, 206, 153, 24);
+        panel_3.add(label_6);
+        
+        JLabel label_7 = new JLabel();
+        label_7.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        label_7.setBounds(619, 244, 153, 24);
+        panel_3.add(label_7);
+        
+        JButton btnNewButton_5 = new JButton("Vybra\u0165");
+        btnNewButton_5.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        		label.setVisible(true);
+        		label_1.setVisible(true);
+        		label_2.setVisible(true);
+        		scrollPane_1.setVisible(true);
+        		label_5.setVisible(true);
+        		label_6.setVisible(true);
+        		label_7.setVisible(true);
+        		
+        		
+        		Object vybraty = comboBox_2.getSelectedItem();
+        		String pomocna = vybraty.toString();
+        		int i = pomocna.indexOf(')');
+        		pomocna=pomocna.substring(1, i);
+        		EtapaManagment spustacE = new EtapaManagment();
+        		List<ZamestnanecEtapy> zamestnanci = new LinkedList<>();
+        		try {
+        			zamestnanci=spustacE.getZamestnanciEtapy(etapyu.get(Integer.parseInt(pomocna)-1).getId().toString());
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+        		String[] header = {"Meno","Priezvisko","Zárobok"};
+        		String[][] obj;
+        		obj = new String [zamestnanci.size()][];
+        		for(int k=0;k<zamestnanci.size();k++){
+        			obj[k]= new String[3];
+        			obj[k][0]=zamestnanci.get(k).getZamestnanec().getMeno();
+        			obj[k][1]=zamestnanci.get(k).getZamestnanec().getPriezvisko();
+        			obj[k][2]=zamestnanci.get(k).getCena().toString();
+        			
+        		}
+        		
+        		JTable table = new JTable(obj, header);
+        		//panel.add(new JScrollPane(table));
+        		JScrollPane scrollPanep = new JScrollPane(table);
+        		scrollPane_1 = scrollPanep;
+                scrollPane_1.setBounds(449, 273, 370, 301);
+                panel_3.add(scrollPane_1);
+        		
+        		/*
+        		String[] header = {"Osobné ID","Meno","Priezvisko","Maliar","Murár","Obkladaè","Betonár","Klampiar","Vodiè(bager)","Vodiè(nakladiak)","Architekt"
+        		};
+        		String[][] obj;
+        		obj = new String [zamestnanci.size()][];
+        		for(int i=0;i<zamestnanci.size();i++){
+        			obj[i]= new String[11];
+        			System.out.printf("Toto je èíslo ktoré chcem vytlaèi: %d", zamestnanci.get(i).getId());
+        			String j = zamestnanci.get(i).getId().toString();
+        			obj[i][0]=j;
+        			obj[i][1]=zamestnanci.get(i).getMeno();
+        			obj[i][2]=zamestnanci.get(i).getPriezvisko();
+        			if(zamestnanci.get(i).getMaliar()==true) obj[i][3]="Áno";
+        			else obj[i][3]="Nie";
+        			if(zamestnanci.get(i).getMurar()==true) obj[i][4]="Áno";
+        			else obj[i][4]="Nie";
+        			if(zamestnanci.get(i).getObkladac()==true) obj[i][5]="Áno";
+        			else obj[i][5]="Nie";
+        			if(zamestnanci.get(i).getBetonar()==true) obj[i][6]="Áno";
+        			else obj[i][6]="Nie";
+        			if(zamestnanci.get(i).getKlampiar()==true) obj[i][7]="Áno";
+        			else obj[i][7]="Nie";
+        			if(zamestnanci.get(i).getVodic_bager()==true) obj[i][8]="Áno";
+        			else obj[i][8]="Nie";
+        			if(zamestnanci.get(i).getVodic_nakladne()==true) obj[i][9]="Áno";
+        			else obj[i][9]="Nie";
+        			if(zamestnanci.get(i).getArchitekt()==true) obj[i][10]="Áno";
+        			else obj[i][10]="Nie";
+        			
+        		}
+        		
+        		JPanel panel = new JPanel();
+                panel.setLayout(null);
+        		// constructor of JTable with a fix number of objects
+        		JTable table = new JTable(obj, header);
+        		//panel.add(new JScrollPane(table));
+        		JScrollPane scroll = 
+                		new JScrollPane(table);
+                scroll.setBounds(12, 13, 1000, 1000);
+                panel.add(scroll);
+        		getContentPane().add(panel);*/
+        		
+        	}
+        });
+        btnNewButton_5.setBounds(634, 138, 97, 25);
+        panel_3.add(btnNewButton_5);
+        
         
         JButton btnPridajEtapu = new JButton("Pridaj etapu");
+        btnPridajEtapu.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		NewEtapa okno = new NewEtapa();
+        	}
+        });
         btnPridajEtapu.setBounds(734, 56, 130, 25);
         panel_3.add(btnPridajEtapu);
         lblAktulnaEtapa.setVisible(false);
@@ -1087,6 +1207,12 @@ public class Frame {
 		lblCelkovCena.setVisible(false);
 		comboBox_2.setVisible(false);
 		btnNewButton_5.setVisible(false);
+		lblNewLabel_2.setVisible(false);
+		label_3.setVisible(false);
+		label_4.setVisible(false);
+		label_5.setVisible(false);
+		label_6.setVisible(false);
+		label_7.setVisible(false);
 		
 		
         JButton btnOk = new JButton("OK");
@@ -1097,26 +1223,91 @@ public class Frame {
         		lblDtumZaatia.setVisible(true);
         		lblPracovnci.setVisible(true);
         		scrollPane.setVisible(true);
-        		scrollPane_1.setVisible(true);
         		lblUkonenEtapy.setVisible(true);
-        		label.setVisible(true);
-        		label_1.setVisible(true);
-        		label_2.setVisible(true);
         		lblUkonenEtapy.setVisible(true);
         		lblCelkovCena.setVisible(true);
         		comboBox_2.setVisible(true);
         		btnNewButton_5.setVisible(true);
+        		lblNewLabel_2.setVisible(true);
+        		label_3.setVisible(true);
+        		label_4.setVisible(true);
         		
         		Object vybraty = comboBox_3.getSelectedItem();
         		String pomocna = vybraty.toString();
         		int i = pomocna.indexOf(')');
         		pomocna=pomocna.substring(1, i);
+        		EtapaManagment spustacE = new EtapaManagment();
         		
         		
+        		
+        		try {
+					etapyu = spustacE.getAllEtapyEnd(pomocna);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+        		
+        		
+        		//label_6.setText(etapy.get(0).getDatum().toString());
+        		
+        		comboBox_2.removeAllItems();
+        			for (int j = 0; j< etapyu.size();j++){ 
+        				comboBox_2.addItem("("+(j+1)+") "+etapyu.get(j).getDatum());
+        				//System.out.println();
+        			}
+        		
+        		
+            	etapy = new LinkedList<>();	
+            	try {
+					etapy = spustacE.getAktualEtapa(pomocna);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            	if(etapy.size()>0){
+            	label_3.setText(etapy.get(0).getId().toString()+" - "+etapy.get(0).getDatum().toString());
+            	try {
+					lblNewLabel_2.setText(spustacE.getCenaEtapy(etapy.get(0).getId().toString()).toString());
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            	
+            	List<ZamestnanecEtapy> zamestnanci = new LinkedList<>();
+        		try {
+        			zamestnanci=spustacE.getZamestnanciEtapy(etapy.get(0).getId().toString());
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+        		
+        		String[] header = {"Meno","Priezvisko","Zárobok"};
+        		String[][] obj;
+        		obj = new String [zamestnanci.size()][];
+        		for(int k=0;k<zamestnanci.size();k++){
+        			obj[k]= new String[3];
+        			obj[k][0]=zamestnanci.get(k).getZamestnanec().getMeno();
+        			obj[k][1]=zamestnanci.get(k).getZamestnanec().getPriezvisko();
+        			obj[k][2]=zamestnanci.get(k).getCena().toString();
+        			
+        		}
+        		
+        		JTable table = new JTable(obj, header);
+        		//panel.add(new JScrollPane(table));
+        		JScrollPane scrollPanep = new JScrollPane(table);
+        		scrollPane = scrollPanep;
+                scrollPane.setBounds(40, 273, 370, 301);
+                panel_3.add(scrollPane);
+          
+        		
+        		for(int k = 0;k<zamestnanci.size();k++)
+        			System.out.println(zamestnanci.get(k).getZamestnanec().getMeno() +" "+zamestnanci.get(k).getZamestnanec().getPriezvisko()+" "+zamestnanci.get(k).getCena()+"\n");
         	}
+            	}
         });
         btnOk.setBounds(588, 56, 97, 25);
         panel_3.add(btnOk);
+        
         
         
         JButton btnAktualizuj = new JButton("Aktualizuj");
