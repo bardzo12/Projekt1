@@ -7,8 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import javax.swing.JOptionPane;
+
 import BuildingProcessManager.models.Cena;
-import BuildingProcessManager.models.Zamestnanec;
 
 
 public class CenaManagment extends AllTables {
@@ -38,16 +39,11 @@ public class CenaManagment extends AllTables {
 				stmt.setInt(4, Cena.getId_zamestnanec());
 				stmt.executeUpdate();
 
-			
-			//conn.commit();
-//			throw new SQLException("Tuto vynimku sme vyhodili naschval");
-
 
 		} catch (SQLException e) {
 			if (conn != null) {
 	            try {
-	            	System.err.println(e.getMessage());
-	            	System.err.print("Transaction is being rolled back");
+	            	JOptionPane.showMessageDialog(null,"Cena nebola vložená, opakujte vloženie. Vyskytla sa chyba: " + e.getMessage());
 	                conn.rollback();
 	            } catch(SQLException excep) {
 	                

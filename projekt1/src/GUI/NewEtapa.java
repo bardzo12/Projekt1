@@ -17,8 +17,6 @@ import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,7 +60,7 @@ public class NewEtapa extends JDialog {
 		StavbaManagment spustacS = new StavbaManagment();
 		List<Stavba> stavby = new LinkedList<>();
 		try {
-			stavby=spustacS.getAllStavby();
+			stavby=spustacS.getsAllStavby();
 		} catch (SQLException e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
@@ -76,7 +74,7 @@ public class NewEtapa extends JDialog {
 		for(int i = 0;i<stavby.size();i++)
 			comboBox.addItem("("+stavby.get(i).getId().toString()+")"+" " + stavby.get(i).getNazov());
 		JButton btnNewButton = new JButton("Vybra\u0165");
-		btnNewButton.setBounds(590, 58, 97, 25);
+		btnNewButton.setBounds(607, 58, 97, 25);
 		contentPanel.add(btnNewButton);
 		
 		JLabel lblVyberteVedceho = new JLabel("Vyberte ved\u00FAceho:");
@@ -93,7 +91,7 @@ public class NewEtapa extends JDialog {
 		ZamestnanecManagment spustacM = new ZamestnanecManagment();
 		List<Zamestnanec> zamestnancifree = new LinkedList<>();
 		try {
-			zamestnancifree=spustacM.getAllFree();
+			zamestnancifree=spustacM.getAllFreeV();
 		} catch (SQLException e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
@@ -103,7 +101,7 @@ public class NewEtapa extends JDialog {
 		}
 		JButton button = new JButton("Vybra\u0165");
 		
-		button.setBounds(590, 142, 97, 25);
+		button.setBounds(607, 142, 97, 25);
 		contentPanel.add(button);
 		button.setVisible(false);
 		
@@ -151,8 +149,10 @@ public class NewEtapa extends JDialog {
 					e1.printStackTrace();
 				}
 				List<Zamestnanec> zamestnancifree = new LinkedList<>();
+				List<Zamestnanec> zamestnancifreeP = new LinkedList<>();
 				try {
-					zamestnancifree=spustacZ.getAllFree();
+					zamestnancifree=spustacZ.getAllFreeR();
+					zamestnancifreeP=spustacZ.getAllFreeP();
 					
 				} catch (SQLException e2) {
 					// TODO Auto-generated catch block
@@ -160,18 +160,18 @@ public class NewEtapa extends JDialog {
 				}
 				comboBox_2.removeAllItems();
 				comboBox_3.removeAllItems();
-				for(int j = 0;j<zamestnancifree.size();j++){
+				for(int j = 0;j<zamestnancifree.size();j++)
 					comboBox_2.addItem("("+zamestnancifree.get(j).getId().toString()+")"+" " + zamestnancifree.get(j).getMeno()+" " + zamestnancifree.get(j).getPriezvisko());
-					comboBox_3.addItem("("+zamestnancifree.get(j).getId().toString()+")"+" " + zamestnancifree.get(j).getMeno()+" " + zamestnancifree.get(j).getPriezvisko());
+				for(int j = 0;j<zamestnancifreeP.size();j++)	
+					comboBox_3.addItem("("+zamestnancifreeP.get(j).getId().toString()+")"+" " + zamestnancifreeP.get(j).getMeno()+" " + zamestnancifreeP.get(j).getPriezvisko());
 					
-				}
 				comboBox_2.setVisible(false);
 				comboBox_2.setVisible(true);
 				comboBox_3.setVisible(false);
 				comboBox_3.setVisible(true);
 			}
 		});
-		button_1.setBounds(590, 222, 97, 25);
+		button_1.setBounds(607, 220, 97, 25);
 		contentPanel.add(button_1);
 		button_1.setVisible(false);
 		
@@ -196,22 +196,24 @@ public class NewEtapa extends JDialog {
 					e1.printStackTrace();
 				}
         		List<Zamestnanec> zamestnancifree = new LinkedList<>();
+        		List<Zamestnanec> zamestnancifreeP = new LinkedList<>();
 				try {
-					zamestnancifree=spustacZ.getAllFree();
+					zamestnancifree=spustacZ.getAllFreeR();
+					zamestnancifreeP=spustacZ.getAllFreeP();
 				} catch (SQLException e2) {
 					// TODO Auto-generated catch block
 					e2.printStackTrace();
 				}
 				comboBox_2.removeAllItems();
 				comboBox_3.removeAllItems();
-				for(int j = 0;j<zamestnancifree.size();j++){
+				for(int j = 0;j<zamestnancifree.size();j++)
 					comboBox_2.addItem("("+zamestnancifree.get(j).getId().toString()+")"+" " + zamestnancifree.get(j).getMeno()+" " + zamestnancifree.get(j).getPriezvisko());
-					comboBox_3.addItem("("+zamestnancifree.get(j).getId().toString()+")"+" " + zamestnancifree.get(j).getMeno()+" " + zamestnancifree.get(j).getPriezvisko());
+				for(int j = 0;j<zamestnancifreeP.size();j++)	
+					comboBox_3.addItem("("+zamestnancifreeP.get(j).getId().toString()+")"+" " + zamestnancifreeP.get(j).getMeno()+" " + zamestnancifreeP.get(j).getPriezvisko());
 					
-				}
 			}
 		});
-		button_2.setBounds(590, 295, 97, 25);
+		button_2.setBounds(607, 295, 97, 25);
 		contentPanel.add(button_2);
 		
 		JLabel lblNewLabel = new JLabel("Hodinov\u00E1 MZDA:");
@@ -248,6 +250,26 @@ public class NewEtapa extends JDialog {
 		lblHodn.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		lblHodn.setBounds(657, 403, 164, 16);
 		contentPanel.add(lblHodn);
+		
+		JButton btnUkoniStavbu = new JButton("Ukon\u010Di stavbu");
+		btnUkoniStavbu.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Object vybraty = comboBox.getSelectedItem();
+        		String pomocna = vybraty.toString();
+        		int i = pomocna.indexOf(')');
+        		pomocna=pomocna.substring(1, i);
+        		StavbaManagment spustacS = new StavbaManagment();
+        		try {
+					spustacS.setStavbaEnd(pomocna);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        		dispose();
+			}
+		});
+		btnUkoniStavbu.setBounds(481, 58, 111, 25);
+		contentPanel.add(btnUkoniStavbu);
 		lblHodn.setVisible(false);
 		
 		button_2.setVisible(false);
@@ -344,18 +366,21 @@ public class NewEtapa extends JDialog {
 				comboBox_2.removeAllItems();
 				comboBox_3.removeAllItems();
 				spustacZ = new ZamestnanecManagment();
+				List<Zamestnanec> zamestnancifreeP = new LinkedList<>();
 				List<Zamestnanec> zamestnancifree = new LinkedList<>();
 				try {
-					zamestnancifree=spustacZ.getAllFree();
+					zamestnancifree=spustacZ.getAllFreeR();
+					zamestnancifreeP=spustacZ.getAllFreeP();
 				} catch (SQLException e2) {
 					// TODO Auto-generated catch block
 					e2.printStackTrace();
 				}
-				for(int i = 0;i<zamestnancifree.size();i++){
+				for(int i = 0;i<zamestnancifree.size();i++)
 					comboBox_2.addItem("("+zamestnancifree.get(i).getId().toString()+")"+" " + zamestnancifree.get(i).getMeno()+" " + zamestnancifree.get(i).getPriezvisko());
-					comboBox_3.addItem("("+zamestnancifree.get(i).getId().toString()+")"+" " + zamestnancifree.get(i).getMeno()+" " + zamestnancifree.get(i).getPriezvisko());
+				for(int i = 0;i<zamestnancifreeP.size();i++)	
+					comboBox_3.addItem("("+zamestnancifreeP.get(i).getId().toString()+")"+" " + zamestnancifreeP.get(i).getMeno()+" " + zamestnancifreeP.get(i).getPriezvisko());
 					
-				}
+				
 			}
 		});
 	}

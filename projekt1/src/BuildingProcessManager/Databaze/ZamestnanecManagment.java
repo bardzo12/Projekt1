@@ -92,16 +92,16 @@ public class ZamestnanecManagment extends AllTables{
 				updateStatementString= "UPDATE zamestnanci SET meno = '"+Novy.getMeno()+"',priezvisko = '"+Novy.getPriezvisko()+"', telefon = '"+Novy.getTelefon()+"', house_number = '"+Novy.getAdresa().getNumber()+"'"
 						+ ", ulica = '"+Novy.getAdresa().getUlica()+"', mesto = '"+Novy.getAdresa().getMesto()+"', psc = '"+Novy.getAdresa().getPSC()+"'"
 						+ ", maliar = '"+Novy.getMaliar()+"', murar = '"+Novy.getMurar()+"', obkladac = '"+Novy.getObkladac()+"'"
-								+ ", betonar = '"+Novy.getBetonar()+"', klampiar = '"+Novy.getKlampiar()+"', vodic_bager = '"+Novy.getVodic_bager()+"', vodic_nakladne = '"+Novy.getVodic_nakladne()+"', architekt = '"+Novy.getArchitekt()+"' WHERE id = '"+Kto.getId()+"'";
+								+ ", betonar = '"+Novy.getBetonar()+"', klampiar = '"+Novy.getKlampiar()+"', vodic_bager = '"+Novy.getVodic_bager()+"', vodic_nakladne = '"+Novy.getVodic_nakladne()+"', architekt = '"+Novy.getArchitekt()+"' , post_id = "+ Novy.getPost().getId().toString()+" WHERE id = '"+Kto.getId()+"'";
 			else if(Novy.getZdravotny_stav()==false)
 				updateStatementString= "UPDATE zamestnanci SET meno = '"+Novy.getMeno()+"',priezvisko = '"+Novy.getPriezvisko()+"', telefon = '"+Novy.getTelefon()+"', house_number = '"+Novy.getAdresa().getNumber()+"'"
 					+ ", ulica = '"+Novy.getAdresa().getUlica()+"', mesto = '"+Novy.getAdresa().getMesto()+"', psc = '"+Novy.getAdresa().getPSC()+"'"
 							+ ", maliar = '"+Novy.getMaliar()+"', murar = '"+Novy.getMurar()+"', obkladac = '"+Novy.getObkladac()+"'"
-									+ ", betonar = '"+Novy.getBetonar()+"', klampiar = '"+Novy.getKlampiar()+"', vodic_bager = '"+Novy.getVodic_bager()+"', vodic_nakladne = '"+Novy.getVodic_nakladne()+"', zaciatokPN = '"+Novy.getZaciatokPN()+"', koniecPN='"+Novy.getKoniecPN()+"', zdravotny_stav = '"+Novy.getZdravotny_stav()+"', architekt = '"+Novy.getArchitekt()+"' WHERE id = '"+Kto.getId()+"'";
+									+ ", betonar = '"+Novy.getBetonar()+"', klampiar = '"+Novy.getKlampiar()+"', vodic_bager = '"+Novy.getVodic_bager()+"', vodic_nakladne = '"+Novy.getVodic_nakladne()+"', zaciatokPN = '"+Novy.getZaciatokPN()+"', koniecPN='"+Novy.getKoniecPN()+"', zdravotny_stav = '"+Novy.getZdravotny_stav()+"', architekt = '"+Novy.getArchitekt()+"' , post_id = "+ Novy.getPost().getId().toString()+" WHERE id = '"+Kto.getId()+"'";
 			else updateStatementString= "UPDATE zamestnanci SET meno = '"+Novy.getMeno()+"',priezvisko = '"+Novy.getPriezvisko()+"', telefon = '"+Novy.getTelefon()+"', house_number = '"+Novy.getAdresa().getNumber()+"'"
 					+ ", ulica = '"+Novy.getAdresa().getUlica()+"', mesto = '"+Novy.getAdresa().getMesto()+"', psc = '"+Novy.getAdresa().getPSC()+"'"
 					+ ", maliar = '"+Novy.getMaliar()+"', murar = '"+Novy.getMurar()+"', obkladac = '"+Novy.getObkladac()+"'"
-							+ ", betonar = '"+Novy.getBetonar()+"', klampiar = '"+Novy.getKlampiar()+"', vodic_bager = '"+Novy.getVodic_bager()+"', vodic_nakladne = '"+Novy.getVodic_nakladne()+"', zdravotny_stav = '"+Novy.getZdravotny_stav()+"', architekt = '"+Novy.getArchitekt()+"', koniecPN = NULL, zaciatokPN = NULL WHERE id = '"+Kto.getId()+"'";
+							+ ", betonar = '"+Novy.getBetonar()+"', klampiar = '"+Novy.getKlampiar()+"', vodic_bager = '"+Novy.getVodic_bager()+"', vodic_nakladne = '"+Novy.getVodic_nakladne()+"', zdravotny_stav = '"+Novy.getZdravotny_stav()+"', architekt = '"+Novy.getArchitekt()+"', koniecPN = NULL, zaciatokPN = NULL , post_id = "+ Novy.getPost().getId().toString()+" WHERE id = '"+Kto.getId()+"'";
 			stmt  =  conn.prepareStatement(updateStatementString);
 			stmt.executeUpdate();
 		} catch (SQLException e) {
@@ -149,7 +149,7 @@ public class ZamestnanecManagment extends AllTables{
 	    stmt = (PreparedStatement) conn.prepareStatement(createStatementString);
 	    try {
 			conn = DriverManager.getConnection(connectionString, connectionProps);
-				stmt.setInt(1, 3);
+				stmt.setInt(1, Zamestnanec.getPost().getId());
 				stmt.setString(2, Zamestnanec.getMeno());
 				stmt.setString(3, Zamestnanec.getPriezvisko());
 				stmt.setBoolean(4, true);
@@ -238,6 +238,27 @@ public class ZamestnanecManagment extends AllTables{
 			stmt.close();
 		}
 	    return result;
+	}
+
+	public List<Zamestnanec> getAllFreeV() throws SQLException {
+		return(selectQuery("SELECT * FROM Zamestnanci z "
+				+ "JOIN Post p ON z.Post_id=p.id"
+				+ " WHERE p.id=1" 
+				+ " order by z.priezvisko,z.meno"));
+	}
+	
+	public List<Zamestnanec> getAllFreeR() throws SQLException {
+		return(selectQuery("SELECT * FROM Zamestnanci z "
+				+ "JOIN Post p ON z.Post_id=p.id"
+				+ " WHERE p.id=2" 
+				+ " order by z.priezvisko,z.meno"));
+	}
+	
+	public List<Zamestnanec> getAllFreeP() throws SQLException {
+		return(selectQuery("SELECT * FROM Zamestnanci z "
+				+ "JOIN Post p ON z.Post_id=p.id"
+				+ " WHERE p.id=3" 
+				+ " order by z.priezvisko,z.meno"));
 	}
 	
 	

@@ -1,30 +1,25 @@
 package GUI;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
 import BuildingProcessManager.models.Objednavatel;
 import BuildingProcessManager.models.Objednavka;
 import BuildingProcessManager.models.Stavba;
 import BuildingProcessManager.models.Zamestnanec;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-
+@SuppressWarnings("serial")
 public class ViewStavba extends JFrame {
 
 	private JPanel contentPane;
@@ -222,31 +217,32 @@ public class ViewStavba extends JFrame {
 		JButton btnNewButton = new JButton("Pozrie\u0165 pracovn\u00EDkov stavby");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				@SuppressWarnings("unused")
 				TableZamestnanciStavby pracujuci = new TableZamestnanciStavby(stavba.getNazov(),zamestnanci);
 			}
 		});
-		btnNewButton.setBounds(939, 598, 242, 50);
+		btnNewButton.setBounds(1018, 598, 242, 50);
 		contentPane.add(btnNewButton);
 		
 		JLabel lblDoposiaCenaPrce = new JLabel("Doposia\u013E cena pr\u00E1ce:");
 		lblDoposiaCenaPrce.setFont(new Font("Times New Roman", Font.BOLD, 27));
-		lblDoposiaCenaPrce.setBounds(363, 594, 259, 50);
+		lblDoposiaCenaPrce.setBounds(462, 594, 259, 50);
 		contentPane.add(lblDoposiaCenaPrce);
 		
 		NumberFormat formatter = new DecimalFormat("#0.00"); 
 		JLabel lblSss = new JLabel(formatter.format(cena).toString() + " €");
 		lblSss.setFont(new Font("Times New Roman", Font.PLAIN, 25));
-		lblSss.setBounds(746, 601, 165, 37);
+		lblSss.setBounds(841, 601, 165, 37);
 		contentPane.add(lblSss);
 		
 		JLabel lblCenaAjBez = new JLabel("Cena aj bez dokon\u010Den\u00FDch et\u00E1p:");
 		lblCenaAjBez.setFont(new Font("Times New Roman", Font.BOLD, 27));
-		lblCenaAjBez.setBounds(363, 644, 372, 50);
+		lblCenaAjBez.setBounds(462, 644, 372, 50);
 		contentPane.add(lblCenaAjBez);
 		
 		JLabel label_11 = new JLabel(formatter.format(cenavsetko).toString() + " €");
 		label_11.setFont(new Font("Times New Roman", Font.PLAIN, 25));
-		label_11.setBounds(746, 651, 165, 37);
+		label_11.setBounds(841, 651, 165, 37);
 		contentPane.add(label_11);
 	}
 }

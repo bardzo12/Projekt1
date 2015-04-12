@@ -10,6 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
+import javax.swing.JOptionPane;
+
 import BuildingProcessManager.models.Cena;
 import BuildingProcessManager.models.Etapa;
 import BuildingProcessManager.models.Zamestnanec;
@@ -24,10 +26,6 @@ public class EtapaManagment extends AllTables{
 		return(new Etapa(rs.getInt("id"),rs.getInt("id_stavba"),rs.getDate("datum"),rs.getBoolean("stav")));
 	}
 	
-	/*
-	select * from etapa e
-	LEFT JOIN stavba s ON s.id=e.id_stavba
-	*/
 	@SuppressWarnings("unchecked")
 	public List<Etapa> getAllEtapy(String id_stavba) throws SQLException
 	{
@@ -55,14 +53,6 @@ public class EtapaManagment extends AllTables{
 				+ " WHERE s.id = " + id_stavba + 
 				" and e.stav=false"));
 	}
-	/*
-	select s.nazov,e.id,SUM(c.hodinovka*c.pocethodin) from cena c
-	JOIN zamestnanci z ON z.id=c.id_zamestnanec
-	JOIN etapa e ON e.id=c.id_etapa
-	JOIN stavba s ON s.id=e.id_stavba
-	WHERE e.id = 
-	group by s.nazov,e.id
-	*/
 	
 	public Double getCenaEtapy(String id) throws SQLException{
 		List<Double> result = new LinkedList<Double>();
@@ -95,8 +85,6 @@ public class EtapaManagment extends AllTables{
 	    connectionProps.put("user", "postgres");
 	    connectionProps.put("password", "dbs2015");
 	    String connectionString = "jdbc:postgresql://localhost:5432/postgres";
-	    
-	    // {"Osobné ID","Meno","Priezvisko","Maliar","Murár","Obkladaè","Betonár","Klampiar","Vodiè(bager)","Vodiè(nakladiak)","Architekt"
 	    try {
 			conn = DriverManager.getConnection(connectionString, connectionProps);
 			stmt = conn.createStatement();
@@ -111,8 +99,7 @@ public class EtapaManagment extends AllTables{
 				result.add(new ZamestnanecEtapy(new Zamestnanec(rs.getString(1),rs.getString(2)),rs.getDouble(3)));
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null,"Vyskytla sa chyba: " + e.getMessage());
 		} finally {
 			stmt.close();
 		}
@@ -141,18 +128,10 @@ public class EtapaManagment extends AllTables{
 				stmt.setDate(2, sqlDate);
 				stmt.setBoolean(3, false);
 				stmt.executeUpdate();
-				
-
-			
-			//conn.commit();
-//			throw new SQLException("Tuto vynimku sme vyhodili naschval");
-
-
 		} catch (SQLException e) {
 			if (conn != null) {
 	            try {
-	            	System.err.println(e.getMessage());
-	            	System.err.print("Transaction is being rolled back");
+	            	JOptionPane.showMessageDialog(null,"Etapa nebola vložená, opakujte vloženie. Vyskytla sa chyba: " + e.getMessage());
 	                conn.rollback();
 	            } catch(SQLException excep) {
 	                

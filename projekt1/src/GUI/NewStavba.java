@@ -2,18 +2,19 @@ package GUI;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-
-import java.awt.Font;
-
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 import BuildingProcessManager.Databaze.StavbaManagment;
 import BuildingProcessManager.models.Adresa;
@@ -21,11 +22,7 @@ import BuildingProcessManager.models.Stavba;
 
 import com.toedter.calendar.JDateChooser;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.sql.SQLException;
-import java.util.Date;
-
+@SuppressWarnings("serial")
 public class NewStavba extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
@@ -119,6 +116,7 @@ public class NewStavba extends JDialog {
 			btnNewButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					Date DatumStart;
+					@SuppressWarnings("unused")
 					Date DatumKoniec;
 					int good=0;
         			good=0;

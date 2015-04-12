@@ -1,19 +1,16 @@
 package BuildingProcessManager.Databaze;
 
 import java.sql.Connection;
-import java.util.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.RowId;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
-import javax.naming.spi.DirStateFactory.Result;
 import javax.swing.JOptionPane;
 
 import BuildingProcessManager.models.Adresa;
@@ -25,12 +22,17 @@ import BuildingProcessManager.models.Zamestnanec;
 public class StavbaManagment extends AllTables{
 	
 	@SuppressWarnings("unchecked")
-	public List<Stavba> getAllStavby() throws SQLException
+	public List<Stavba> getsAllStavby() throws SQLException
 	{
 		return(selectQuery("SELECT * FROM stavba"
 				+ " WHERE stav=false"));
 	}
 
+	public List<Stavba> getAllStavby() throws SQLException
+	{
+		return(selectQuery("SELECT * FROM stavba"));
+	}
+	
 	@Override
 	protected Object processRow(ResultSet rs) throws SQLException {
 		return(new Stavba(rs.getInt("id"),rs.getString("nazov"),rs.getInt("objednavka_id"),rs.getBoolean("stav"),rs.getDate("zaciatok"),rs.getDate("koniec"),rs.getDate("predpokladany_koniec"),rs.getString("ulica"),rs.getString("mesto"),rs.getString("psc")));
@@ -158,7 +160,19 @@ public class StavbaManagment extends AllTables{
 	    result.add(new Zamestnanec(rs.getString(1),rs.getString(2)));
 		if(result.size()>0)
 			return result.get(0);
-		else return null;
+		else {
+			rs = stmt.executeQuery("select z.meno,z.priezvisko,p.nazov from etapa e"+
+					" LEFT JOIN stavba s ON e.id_stavba=s.id"+
+					" LEFT JOIN cena c ON c.id_etapa=e.id"+
+					" LEFT JOIN zamestnanci z ON z.id=c.id_zamestnanec"+
+					" JOIN post p ON p.id=z.post_id"+
+					" where p.nazov = 'Vedúci' AND s.id = " +toto + " AND e.stav=true");
+			while(rs.next())
+				result.add(new Zamestnanec(rs.getString(1),rs.getString(2)));
+			if(result.size()>0)
+				return result.get(0);
+			else return null;
+		}
 	}
 
 	public List<Zamestnanec> getZamestnanciStavby(String toto) throws SQLException{
@@ -183,8 +197,8 @@ public class StavbaManagment extends AllTables{
 		return result;
 	}
 	
-	
-	
+
+
 	public void insertStavba(Stavba Stavba) throws SQLException {
 		PreparedStatement stmt = null;
 		Connection conn=null;
@@ -225,5 +239,42 @@ public class StavbaManagment extends AllTables{
 				stmt.close();
 			}
 		}
+	}
+
+	public void setStavbaEnd(String pomocna) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		
+		Properties connectionProps = new Properties();
+	    connectionProps.put("user", "postgres");
+	    connectionProps.put("password", "dbs2015");
+	    String connectionString = "jdbc:postgresql://localhost:5432/postgres";
+	    
+		try {
+			conn = DriverManager.getConnection(connectionString, connectionProps);
+			conn.setAutoCommit(true);
+			String updateStatementString = new String();
+			Date date = new Date();
+			java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+			System.out.printf("Toto je dátum: %s\n", sqlDate.toString());
+				updateStatementString= "UPDATE stavba SET  stav= TRUE,koniec = '"+sqlDate.toString()+ "' where id = " + pomocna+
+						"; UPDATE etapa SET stav=TRUE where id_stavba= " + pomocna;
+			stmt  =  conn.prepareStatement(updateStatementString);
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			if (conn != null) {
+	            try {
+	            	JOptionPane.showMessageDialog(null,"Stavba nebola ukonèená. Vyskytla sa chyba: " + e.getMessage());
+	                conn.rollback();
+	            } catch(SQLException excep) {
+	                
+	            }
+	        }
+		} finally {
+			if(stmt != null){
+				stmt.close();
+			}
+		}
+		
 	}
 }

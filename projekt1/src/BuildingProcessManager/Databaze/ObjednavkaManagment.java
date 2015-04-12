@@ -12,7 +12,6 @@ import java.util.Properties;
 import BuildingProcessManager.models.Adresa;
 import BuildingProcessManager.models.Objednavatel;
 import BuildingProcessManager.models.Objednavka;
-import BuildingProcessManager.models.Zamestnanec;
 
 public class ObjednavkaManagment extends AllTables{
 
@@ -20,6 +19,7 @@ public class ObjednavkaManagment extends AllTables{
 		return(new Objednavka(rs.getInt("id"),rs.getInt("objednavatel_id"),rs.getDate("datum_zadania"),rs.getBoolean("ukoncena"),rs.getInt("stav_id")));
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Objednavka> getObjednavkyNevybavene() throws SQLException
 	{
 		return(selectQuery("select * from objednavka "+
@@ -44,8 +44,6 @@ public class ObjednavkaManagment extends AllTables{
 												+" where ob.id = " + id);
 			while(rs.next())
 		    result.add(new Objednavatel(rs.getInt("id"),rs.getString("meno"),rs.getString("ico"),rs.getString("dic"),rs.getString("e_mail"),new Adresa(rs.getInt("house_number"),rs.getString("ulica"),rs.getString("mesto"),rs.getString("PSC"))));
-			while(rs.next())
-			System.out.printf("Meno objednavatela jeeeeeeeeee: %s", rs.getString("meno").toString());
 			return result.get(0);
 	}
 	
@@ -64,8 +62,6 @@ public class ObjednavkaManagment extends AllTables{
 											+" where ob.id = " + id);
 		while(rs.next())
 	    result.add(new Objednavatel(rs.getInt("id"),rs.getString("meno"),rs.getString("ico"),rs.getString("dic"),rs.getString("e_mail"),new Adresa(rs.getInt("house_number"),rs.getString("ulica"),rs.getString("mesto"),rs.getString("PSC"))));
-		while(rs.next())
-		System.out.printf("Meno objednavatela jeeeeeeeeee: %s", rs.getString("meno").toString());
 		return result.get(0);
 }
 }

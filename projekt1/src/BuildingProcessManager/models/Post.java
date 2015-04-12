@@ -8,6 +8,7 @@ public class Post {
 	
 	private String Kompetencie;
 	
+
 	public String getNazov() {
 		return Nazov;
 	}
@@ -31,5 +32,11 @@ public class Post {
 	public void setId(Integer id) {
 		this.id = id;
 	}
+	
+	public Post(Integer parseInt) {
+		setId(parseInt);
+	}
 
+	public Post() {
+	}
 }

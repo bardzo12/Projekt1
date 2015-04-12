@@ -35,7 +35,6 @@ import javax.swing.table.AbstractTableModel;
 
 import com.toedter.calendar.JDateChooser;
 
-import BuildingProcessManager.Runner;
 import BuildingProcessManager.Databaze.EtapaManagment;
 import BuildingProcessManager.Databaze.ObjednavkaManagment;
 import BuildingProcessManager.Databaze.StavbaManagment;
@@ -43,21 +42,19 @@ import BuildingProcessManager.Databaze.ZamestnanecManagment;
 import BuildingProcessManager.models.Etapa;
 import BuildingProcessManager.models.Objednavatel;
 import BuildingProcessManager.models.Objednavka;
+import BuildingProcessManager.models.Post;
 import BuildingProcessManager.models.Stavba;
 import BuildingProcessManager.models.Zamestnanec;
 import BuildingProcessManager.models.Adresa;
 import BuildingProcessManager.models.ZamestnanecEtapy;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Rectangle;
 
 import javax.swing.JComboBox;
 
 import java.awt.Component;
 
-import javax.swing.JScrollBar;
 
 public class Frame {
 
@@ -77,7 +74,7 @@ public class Frame {
 	public static void main(String[] args) throws SQLException {
     	spustacZ = new ZamestnanecManagment();
     	spustac = new Runner();
-    	spustacZ=spustac.Start();
+    	spustacZ=new ZamestnanecManagment();
     	spustacS= new StavbaManagment();
     	spustac.setVsetciZamestnanci(spustacZ);
     	new Frame();
@@ -131,6 +128,18 @@ public class Frame {
 			textField.setText(Meno);
 			contentPane.add(textField);
 			textField.setColumns(10);
+			
+			JComboBox<String> comboBox = new JComboBox<>();
+	        comboBox.addItem("(1)Vedúci");
+	        comboBox.addItem("(2)Robotník");
+	        comboBox.addItem("(3)Pomocník");
+	        comboBox.setBounds(463, 170, 121, 22);
+	        contentPane.add(comboBox);
+	        
+	        JLabel lblPost = new JLabel("Post:");
+	        lblPost.setFont(new Font("Tahoma", Font.PLAIN, 16));
+	        lblPost.setBounds(346, 172, 56, 16);
+	        contentPane.add(lblPost);
 			
 			JLabel lblMeno = new JLabel("Meno:");
 			lblMeno.setBounds(12, 32, 56, 16);
@@ -388,6 +397,11 @@ public class Frame {
 	        		Novy.setMeno(textField.getText());
 	        		Novy.setPriezvisko(textField_1.getText());
 	        		Novy.setTelefon(textField_2.getText());
+	        		Object vybraty = comboBox.getSelectedItem();
+	        		String pomocna = vybraty.toString();
+	        		int i = pomocna.indexOf(')');
+	        		pomocna=pomocna.substring(1, i);
+	        		Novy.setPost(new Post(Integer.parseInt(pomocna)));
 	        		//Post Post = new Post();
 	        		
 	        		dispose();
@@ -397,8 +411,8 @@ public class Frame {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-	        		frame.dispose();
-	        		frame=null;
+	        		//frame.dispose();
+	        		//frame=null;
 	        		try {
 						spustac.setVsetciZamestnanci(spustacZ);
 					} catch (SQLException e1) {
@@ -468,6 +482,14 @@ public class Frame {
 			lblMeno.setBounds(12, 32, 56, 16);
 			//lblMeno.setText(Meno);
 			contentPane.add(lblMeno);
+			
+			 JComboBox<String> comboBox = new JComboBox<>();
+		        comboBox.addItem("(1)Vedúci");
+		        comboBox.addItem("(2)Robotník");
+		        comboBox.addItem("(3)Pomocník");
+		        comboBox.setBounds(463, 170, 121, 22);
+		        contentPane.add(comboBox);
+		        
 			
 			JLabel lblPriezvisko = new JLabel("Priezvisko:");
 			lblPriezvisko.setBounds(12, 81, 69, 16);
@@ -609,6 +631,11 @@ public class Frame {
 	        		Novy.setMeno(textField.getText());
 	        		Novy.setPriezvisko(textField_1.getText());
 	        		Novy.setTelefon(textField_2.getText());
+	        		Object vybraty = comboBox.getSelectedItem();
+	        		String pomocna = vybraty.toString();
+	        		int i = pomocna.indexOf(')');
+	        		pomocna=pomocna.substring(1, i);
+	        		Novy.setPost(new Post(Integer.parseInt(pomocna)));
 	        		
 	        		//Post Post = new Post();
 	        		//Novy.setPost();
@@ -647,6 +674,13 @@ public class Frame {
 	        });
 	        btnNewButton_1.setBounds(585, 388, 104, 41);
 	        contentPane.add(btnNewButton_1);
+	        
+	        JLabel lblPost = new JLabel("Post:");
+	        lblPost.setFont(new Font("Tahoma", Font.PLAIN, 16));
+	        lblPost.setBounds(346, 172, 56, 16);
+	        contentPane.add(lblPost);
+	        
+	        
 	        
 	}	
 	}
@@ -1208,15 +1242,16 @@ public class Frame {
         		scrollPane = scrollPanep;
                 scrollPane.setBounds(40, 273, 370, 301);
                 panel_3.add(scrollPane);
+        		//panel.add(new JScrollPane(table));
           
         		
         		}
             	else {
             		
             		label_3.setText("");
-                	
-    					lblNewLabel_2.setText("");
-    					
+            		lblNewLabel_2.setText("");
+            		label_5.setText("");	
+            		label_6.setText("");
             		
             		String[] hlavicka = {"Meno","Priezvisko","Zárobok"};
             		String[][] zlozky;
@@ -1231,6 +1266,11 @@ public class Frame {
             		scrollPane = scrollPanep;
                     scrollPane.setBounds(40, 273, 370, 301);
                     panel_3.add(scrollPane);
+                    JTable table2 = new JTable(zlozky, hlavicka);
+            		JScrollPane scrollPanep2 = new JScrollPane(table2);
+            		scrollPane_1 = scrollPanep2;
+                    scrollPane_1.setBounds(449, 273, 370, 301);
+                    panel_3.add(scrollPane_1);
             			
             		}
             		
