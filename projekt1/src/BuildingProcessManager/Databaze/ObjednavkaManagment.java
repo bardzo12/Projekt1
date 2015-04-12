@@ -48,4 +48,24 @@ public class ObjednavkaManagment extends AllTables{
 			System.out.printf("Meno objednavatela jeeeeeeeeee: %s", rs.getString("meno").toString());
 			return result.get(0);
 	}
+	
+	public Objednavatel getObjednavatelObjednavka(String id) throws SQLException{
+		List<Objednavatel> result = new LinkedList<Objednavatel>();
+		Connection conn = null;
+		Statement stmt = null;
+		Properties connectionProps = new Properties();
+	    connectionProps.put("user", "postgres");
+	    connectionProps.put("password", "dbs2015");
+	    String connectionString = "jdbc:postgresql://localhost:5432/postgres";
+	    conn = DriverManager.getConnection(connectionString, connectionProps);
+		stmt = conn.createStatement();
+		ResultSet rs = stmt.executeQuery("select ob.id,ob.meno,ob.ico,ob.dic,ob.e_mail,ob.house_number,ob.ulica,ob.mesto,ob.psc from objednavka o"
+											+" JOIN objednavatel ob ON ob.id=o.objednavatel_id"
+											+" where ob.id = " + id);
+		while(rs.next())
+	    result.add(new Objednavatel(rs.getInt("id"),rs.getString("meno"),rs.getString("ico"),rs.getString("dic"),rs.getString("e_mail"),new Adresa(rs.getInt("house_number"),rs.getString("ulica"),rs.getString("mesto"),rs.getString("PSC"))));
+		while(rs.next())
+		System.out.printf("Meno objednavatela jeeeeeeeeee: %s", rs.getString("meno").toString());
+		return result.get(0);
+}
 }

@@ -899,7 +899,7 @@ public class Frame {
 		List<Objednavka> objednavkyNevybavene = new LinkedList<Objednavka> ();
 		try {
 			for (Objednavka objednavka : spustacO.getObjednavkyNevybavene()) {
-				comboBox_1.addItem("("+objednavka.getId()+")" + " "+spustacO.getObjednavatel(objednavka.getObjednavatel_id().toString()).getMeno()+" "+objednavka.getDatumZadania());
+				comboBox_1.addItem("("+objednavka.getId()+")" + " "+spustacO.getObjednavatelObjednavka(objednavka.getObjednavatel_id().toString()).getMeno()+" "+objednavka.getDatumZadania());
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
