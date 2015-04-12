@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.naming.spi.DirStateFactory.Result;
+import javax.swing.JOptionPane;
 
 import BuildingProcessManager.models.Adresa;
 import BuildingProcessManager.models.Objednavatel;
@@ -152,7 +153,7 @@ public class StavbaManagment extends AllTables{
 											" LEFT JOIN cena c ON c.id_etapa=e.id"+
 											" LEFT JOIN zamestnanci z ON z.id=c.id_zamestnanec"+
 											" JOIN post p ON p.id=z.post_id"+
-											" where p.nazov = 'Vedúci' AND s.id = " +toto);
+											" where p.nazov = 'Vedúci' AND s.id = " +toto + " AND e.stav=false");
 		while(rs.next())
 	    result.add(new Zamestnanec(rs.getString(1),rs.getString(2)));
 		if(result.size()>0)
@@ -175,7 +176,8 @@ public class StavbaManagment extends AllTables{
 											" JOIN cena c ON c.id_etapa=e.id "+
 											" JOIN zamestnanci z ON z.id=c.id_zamestnanec "+
 											"where s.id = "+toto+
-											"GROUP BY z.id,z.meno,z.priezvisko,z.maliar,z.murar,z.obkladac,z.betonar,z.klampiar,z.vodic_bager,z.vodic_nakladne,z.architekt");
+											"GROUP BY z.id,z.meno,z.priezvisko,z.maliar,z.murar,z.obkladac,z.betonar,z.klampiar,z.vodic_bager,z.vodic_nakladne,z.architekt"
+											+ " order by z.priezvisko");
 		while(rs.next())
 	    result.add(new Zamestnanec(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getBoolean(4),rs.getBoolean(5),rs.getBoolean(6),rs.getBoolean(7),rs.getBoolean(8),rs.getBoolean(9),rs.getBoolean(10),rs.getBoolean(11)));
 		return result;
@@ -191,7 +193,8 @@ public class StavbaManagment extends AllTables{
 	    connectionProps.put("user", "postgres");
 	    connectionProps.put("password", "dbs2015");
 	    String connectionString = "jdbc:postgresql://localhost:5432/postgres";
-	    createStatementString = "INSERT INTO stavba(nazov,objednavka_id,stav,zaciatok,predpokladany_koniec, ulica,mesto,psc) VALUES(?,?,?,?,?,?,?,?)";
+	    createStatementString = "INSERT INTO stavba(nazov,objednavka_id,stav,zaciatok,predpokladany_koniec, ulica,mesto,psc) VALUES(?,?,?,?,?,?,?,?);"
+	    		+ " UPDATE objednavka SET ukoncena = true,stav_id=3 WHERE id = "+Stavba.getId_objednavka().toString();
 	    conn = DriverManager.getConnection(connectionString, connectionProps);
 		conn.setAutoCommit(true);
 	    stmt = (PreparedStatement) conn.prepareStatement(createStatementString);
@@ -208,50 +211,10 @@ public class StavbaManagment extends AllTables{
 				stmt.setString(7, Stavba.getAdresa().getMesto());
 				stmt.setString(8, Stavba.getAdresa().getPSC());
 				stmt.executeUpdate();
-
-			
-			//conn.commit();
-//			throw new SQLException("Tuto vynimku sme vyhodili naschval");
-
-				
-				
-
 		} catch (SQLException e) {
 			if (conn != null) {
 	            try {
-	            	System.err.println(e.getMessage());
-	            	System.err.print("Transaction is being rolled back");
-	                conn.rollback();
-	            } catch(SQLException excep) {
-	                
-	            }
-	        }
-		} finally {
-			if(stmt != null){
-				stmt.close();
-			}
-		}
-	    
-	    conn = null;
-		stmt = null;
-		
-		connectionProps = new Properties();
-	    connectionProps.put("user", "postgres");
-	    connectionProps.put("password", "dbs2015");
-	    connectionString = "jdbc:postgresql://localhost:5432/postgres";
-	    
-		try {
-			conn = DriverManager.getConnection(connectionString, connectionProps);
-			conn.setAutoCommit(false);
-			String updateStatementString = "UPDATE objednavka SET ukoncena = true,stav_id=3 WHERE id = "+Stavba.getId_objednavka().toString();
-			stmt  =  conn.prepareStatement(updateStatementString);
-			stmt.executeUpdate();
-			conn.commit();
-		} catch (SQLException e) {
-			if (conn != null) {
-	            try {
-	            	System.err.println(e.getMessage());
-	            	System.err.print("Transaction is being rolled back");
+	            	JOptionPane.showMessageDialog(null,"Stavba nebola vložená, opakujte vloženie. Vyskytla sa chyba: " + e.getMessage());
 	                conn.rollback();
 	            } catch(SQLException excep) {
 	                

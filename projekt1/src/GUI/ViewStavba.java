@@ -34,6 +34,7 @@ public class ViewStavba extends JFrame {
 	 */
 	public ViewStavba(Stavba stavba, Objednavatel objednavatel, Objednavka objednavka, Double cena, Double cenavsetko, Zamestnanec veduci, List<Zamestnanec> zamestnanci) {
 		new JFrame(stavba.getNazov());
+		setTitle(stavba.getNazov());
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 1290, 741);
@@ -78,6 +79,7 @@ public class ViewStavba extends JFrame {
 		lblPredpokladanKoniecStavby.setFont(new Font("Times New Roman", Font.BOLD, 27));
 		lblPredpokladanKoniecStavby.setBounds(30, 252, 372, 50);
 		contentPane.add(lblPredpokladanKoniecStavby);
+		
 		
 		JLabel lblSa = new JLabel(datum.format(stavba.getPredpokladany_koniec()).toString());
 		lblSa.setFont(new Font("Times New Roman", Font.PLAIN, 25));
@@ -212,7 +214,7 @@ public class ViewStavba extends JFrame {
 		lblObjednan.setBounds(30, 594, 143, 50);
 		contentPane.add(lblObjednan);
 		
-		JLabel lblDs = new JLabel(objednavka.getDatumZadania().toString());
+		JLabel lblDs = new JLabel(datum.format(objednavka.getDatumZadania()).toString());
 		lblDs.setFont(new Font("Times New Roman", Font.PLAIN, 25));
 		lblDs.setBounds(223, 601, 165, 37);
 		contentPane.add(lblDs);

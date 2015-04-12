@@ -105,7 +105,8 @@ public class EtapaManagment extends AllTables{
 												" JOIN etapa e ON e.id=c.id_etapa"+
 												" JOIN stavba s ON s.id=e.id_stavba"+
 												" where e.id= "+id_etapa+
-												" group by z.meno,z.priezvisko");
+												" group by z.meno,z.priezvisko"
+												+ " order by SUM(c.hodinovka*c.pocethodin) DESC");
 			while(rs.next()){
 				result.add(new ZamestnanecEtapy(new Zamestnanec(rs.getString(1),rs.getString(2)),rs.getDouble(3)));
 			}

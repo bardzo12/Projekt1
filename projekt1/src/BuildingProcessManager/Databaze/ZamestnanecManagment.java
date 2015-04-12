@@ -6,12 +6,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
+
+import javax.swing.JOptionPane;
 
 import BuildingProcessManager.models.Adresa;
 import BuildingProcessManager.models.Post;
@@ -22,13 +21,12 @@ public class ZamestnanecManagment extends AllTables{
 	protected Zamestnanec processRow(ResultSet rs) throws SQLException{
 		Post post = new Post();
 		post.setNazov(rs.getString("Nazov"));
-		/*rs = stmt.executeQuery( "SELECT * FROM COMPANY;" );
-		post.setNazov(rs.getString(rs.getString("Nazov")));*/
 		Adresa adresa = new Adresa(rs.getInt("House_number"),rs.getString("Ulica"),rs.getString("Mesto"),rs.getString("PSC"));
 		return(new Zamestnanec(rs.getInt("id"),rs.getString("Meno"),rs.getString("Priezvisko"),rs.getBoolean("Zdravotny_stav"),rs.getString("Telefon"),adresa,post,rs.getBoolean("maliar"),rs.getBoolean("murar"),rs.getBoolean("obkladac"),rs.getBoolean("betonar"),rs.getBoolean("klampiar"),rs.getBoolean("vodic_bager"),rs.getBoolean("vodic_nakladne"),
 				rs.getBoolean("architekt"),rs.getDate("zaciatokPN"),rs.getDate("koniecPN")));
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Zamestnanec> getAllZamestnanec() throws SQLException
 	{
 		return(selectQuery("SELECT * FROM Zamestnanci z "
@@ -36,36 +34,12 @@ public class ZamestnanecManagment extends AllTables{
 				+ " order by z.priezvisko,z.meno"));
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<Zamestnanec> getAllRobotnik() throws SQLException
 	{
 		return(selectQuery("SELECT * FROM Zamestnanci z "
 				+ "JOIN Post p ON z.Post_id=p.id "
 				+ "WHERE p.Nazov='Robotník'"));
-	}
-	
-	public static List<Zamestnanec> getAllZamestanecOld() throws SQLException{
-		List<Zamestnanec> result = new LinkedList<Zamestnanec>();
-		Connection conn = null;
-		Statement stmt = null;
-		Properties connectionProps = new Properties();
-	    connectionProps.put("user", "postgres");
-	    connectionProps.put("password", "dbs2015");
-	    String connectionString = "jdbc:postgresql://localhost:5432/postgres";
-	    try {
-			conn = DriverManager.getConnection(connectionString, connectionProps);
-			stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM zamestnanci"
-					+ " order by priezvisko,meno");
-			while(rs.next()){
-				//result.add(new Zamestnanec(rs.getString("Meno"),rs.getString("Priezvisko")));
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			stmt.close();
-		}
-	    return result;
 	}
 	
 	public void updateZamestnanec(String tohto, String Post) throws SQLException{
@@ -87,8 +61,7 @@ public class ZamestnanecManagment extends AllTables{
 		} catch (SQLException e) {
 			if (conn != null) {
 	            try {
-	            	System.err.println(e.getMessage());
-	            	System.err.print("Transaction is being rolled back");
+	            	JOptionPane.showMessageDialog(null,"Zamestnanec nebol upravený, opakujte svoju vo¾bu. Vyskytla sa chyba: " + e.getMessage());
 	                conn.rollback();
 	            } catch(SQLException excep) {
 	                
@@ -134,8 +107,7 @@ public class ZamestnanecManagment extends AllTables{
 		} catch (SQLException e) {
 			if (conn != null) {
 	            try {
-	            	System.err.println(e.getMessage());
-	            	System.err.print("Transaction is being rolled back");
+	            	JOptionPane.showMessageDialog(null,"Zamestnanec nebol upravený, opakujte svoju vo¾bu. Vyskytla sa chyba: " + e.getMessage());
 	                conn.rollback();
 	            } catch(SQLException excep) {
 	                
@@ -148,16 +120,7 @@ public class ZamestnanecManagment extends AllTables{
 		}
 	}
 	
-	
-	
-	/*
-	 * SELECT z.id,z.meno,z.priezvisko FROM zamestnanci z WHERE z.id NOT IN (
-select z.id from cena c
-JOIN etapa e ON e.id=c.id_etapa
-JOIN zamestnanci z ON z.id=c.id_zamestnanec
-where e.stav = true and z.zdravotny_stav=true)
-	
-	 */
+
 	
 	@SuppressWarnings("unchecked")
 	public List<Zamestnanec> getAllFree() throws SQLException
@@ -204,17 +167,10 @@ where e.stav = true and z.zdravotny_stav=true)
 				stmt.setBoolean(16, Zamestnanec.getVodic_nakladne());
 				stmt.setBoolean(17, Zamestnanec.getArchitekt());
 				stmt.executeUpdate();
-
-			
-			//conn.commit();
-//			throw new SQLException("Tuto vynimku sme vyhodili naschval");
-
-
 		} catch (SQLException e) {
 			if (conn != null) {
 	            try {
-	            	System.err.println(e.getMessage());
-	            	System.err.print("Transaction is being rolled back");
+	            	JOptionPane.showMessageDialog(null,"Vloženie nebolo vykonané, vložte používate¾a znova. Vyskytla sa chyba: " + e.getMessage());
 	                conn.rollback();
 	            } catch(SQLException excep) {
 	                
@@ -241,17 +197,10 @@ where e.stav = true and z.zdravotny_stav=true)
 	    stmt = (PreparedStatement) conn.prepareStatement(createStatementString);
 		try{	conn = DriverManager.getConnection(connectionString, connectionProps);
 				stmt.executeUpdate();
-
-			
-			//conn.commit();
-//			throw new SQLException("Tuto vynimku sme vyhodili naschval");
-
-
 		} catch (SQLException e) {
 			if (conn != null) {
 	            try {
-	            	System.err.println(e.getMessage());
-	            	System.err.print("Transaction is being rolled back");
+	            	JOptionPane.showMessageDialog(null,"Vymazanie nebolo vykonané. Vyskytla sa chyba: " + e.getMessage());
 	                conn.rollback();
 	            } catch(SQLException excep) {
 	                
@@ -284,8 +233,7 @@ where e.stav = true and z.zdravotny_stav=true)
 						rs.getBoolean("architekt"),rs.getDate("zaciatokPN"),rs.getDate("koniecPN")));
 				}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null,"Neboli vybratý zamestnanci alebo sa nenachádzajú v databáze. Chyba: " + e.getMessage());
 		} finally {
 			stmt.close();
 		}

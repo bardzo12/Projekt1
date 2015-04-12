@@ -7,6 +7,8 @@ import java.awt.event.WindowEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -73,14 +75,12 @@ public class Frame {
 	private static StavbaManagment spustacS;
 	
 	public static void main(String[] args) throws SQLException {
-		System.out.printf("Zmenil sa program");
     	spustacZ = new ZamestnanecManagment();
     	spustac = new Runner();
     	spustacZ=spustac.Start();
     	spustacS= new StavbaManagment();
     	spustac.setVsetciZamestnanci(spustacZ);
     	new Frame();
-    	System.out.printf("Tu sme");
     }
 	JDateChooser dateChooser = new JDateChooser();
 	JDateChooser dateChooser_1 = new JDateChooser();
@@ -119,7 +119,7 @@ public class Frame {
 			ButtonGroup group = new ButtonGroup();
 			JLabel lblNewLabel = new JLabel("OD:");
 			JLabel lblNewLabel_1 = new JLabel("DO:");
-			setDefaultCloseOperation(JDialog.EXIT_ON_CLOSE);
+			setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			setBounds(100, 100, 730, 515);
 			contentPane = new JPanel();
 			contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -184,6 +184,7 @@ public class Frame {
 			group.add(rdbtnZdrav);
 			lblNewLabel.setVisible(false);
 			lblNewLabel_1.setVisible(false);
+			dateChooser.setVisible(false);
 			dateChooser_1.setVisible(false);
 			btnNewButton.setVisible(false);
 			button.setVisible(true);
@@ -201,7 +202,6 @@ public class Frame {
 	            cal.add(Calendar.DATE, 1);
 	        }
 	        if(Zdravotny_stav==false){
-	        	
 	        	dateChooser.setDate(ZaciatokPN);
 	        	dateChooser_1.setDate(KoniecPN);
 	        }
@@ -217,7 +217,6 @@ public class Frame {
 				
 			}
     		else rdbtnZdrav.setSelected(true);
-	        dateChooser.setVisible(false);
 	        dateChooser.setBounds(298, 131, 122, 22);
 	        contentPane.add(dateChooser);
 	      
@@ -233,8 +232,6 @@ public class Frame {
 	        			Novy.setKoniecPN(DatumEnd);
 	        			Novy.setZdravotny_stav(false);
 	        		}
-	        		SimpleDateFormat ft = new SimpleDateFormat ("dd.MM.yyyy");
-	        		System.out.printf("Zaciatok PN: %s Koniec PN: %s\n", ft.format(DatumStar), DatumEnd);
 	        	}
 	        });
 	        btnNewButton.setBounds(633, 135, 56, 20);
@@ -400,14 +397,6 @@ public class Frame {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-	        		try {
-						for (Zamestnanec zamestnanec : spustacZ.getAllZamestnanec()) {
-							System.out.println(zamestnanec.getMeno() + ":" + zamestnanec.getPriezvisko()+"-"+zamestnanec.getPost().getNazov());
-						}
-					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
 	        		frame.dispose();
 	        		frame=null;
 	        		try {
@@ -417,16 +406,6 @@ public class Frame {
 						e1.printStackTrace();
 					}
 	        		new Frame();
-	        		try {
-						for (Zamestnanec zamestnanec : spustacZ.getAllZamestnanec()) {
-							System.out.println(zamestnanec.getMeno() + ":" + zamestnanec.getPriezvisko()+"-"+zamestnanec.getPost().getNazov());
-						}
-					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-	        		//frame = new Frame1();
-	        		//updateZamestnanec(Stary, Novy);
 	        	}
 	        	}
 	        });
@@ -471,6 +450,7 @@ public class Frame {
 		//private static JFrame frame = new JFrame();
 		 
 		public InsertFrame() throws InterruptedException {
+			setTitle("Vloženie zamestnanca");
 			setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			setBounds(100, 100, 730, 515);
 			contentPane = new JPanel();
@@ -641,34 +621,14 @@ public class Frame {
 						e1.printStackTrace();
 					}
 	        		try {
-						for (Zamestnanec zamestnanec : spustacZ.getAllZamestnanec()) {
-							System.out.println(zamestnanec.getMeno() + ":" + zamestnanec.getPriezvisko()+"-"+zamestnanec.getPost().getNazov());
-						}
-					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-	        		frame.dispose();
-	        		frame=null;
-	        		try {
 						spustac.setVsetciZamestnanci(spustacZ);
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-	        		//new Frame();
-	        		try {
-						for (Zamestnanec zamestnanec : spustacZ.getAllZamestnanec()) {
-							System.out.println(zamestnanec.getMeno() + ":" + zamestnanec.getPriezvisko()+"-"+zamestnanec.getPost().getNazov());
-						}
-					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+	       
 	        		}
 	        	}
-	        		//frame = new Frame1();
-	        		//updateZamestnanec(Stary, Novy);
 	        });
 	        btnUloi.setBounds(476, 390, 97, 41);
 	        contentPane.add(btnUloi);
@@ -830,22 +790,12 @@ public class Frame {
 					e.printStackTrace();
 				}
         		
-        		try {
-        			System.out.printf("\n\n\n\n Vypis odbotnikov");
-					for (Zamestnanec zamestnanec : spustacZ.getOdbornici(prikaz)) {
-						System.out.println(zamestnanec.getMeno() + ":" + zamestnanec.getPriezvisko());
-					}
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
         		String[] header = {"Osobné ID","Meno","Priezvisko","Maliar","Murár","Obkladaè","Betonár","Klampiar","Vodiè(bager)","Vodiè(nakladiak)","Architekt"
         		};
         		String[][] obj;
         		obj = new String [Odbornici.size()][];
         		for(int i=0;i<Odbornici.size();i++){
         			obj[i]= new String[11];
-        			System.out.printf("Toto je èíslo ktoré chcem vytlaèi: %d", Odbornici.get(i).getId());
         			String j = Odbornici.get(i).getId().toString();
         			obj[i][0]=j;
         			obj[i][1]=Odbornici.get(i).getMeno();
@@ -955,16 +905,6 @@ public class Frame {
         });
         btnNewButton_4.setBounds(618, 143, 213, 42);
         panel.add(btnNewButton_4);
-        
-        
-        try {
-			for (Stavba stavba : spustacS.getAllStavby()) {
-				comboBox.addItem("("+stavba.getId()+") "+stavba.getNazov());
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
         
         comboBox.setBounds(230, 143, 367, 42);
         panel.add(comboBox);
@@ -1118,7 +1058,16 @@ public class Frame {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-
+        		
+        		try {
+        			NumberFormat formatter = new DecimalFormat("#0.00");
+					label_5.setText(formatter.format(spustacE.getCenaEtapy(etapyu.get(Integer.parseInt(pomocna)-1).getId().toString())).toString()+ " €");
+					SimpleDateFormat datum = new SimpleDateFormat("dd.MM.yyyy");
+					label_6.setText(datum.format(etapyu.get(Integer.parseInt(pomocna)-1).getDatum()));
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
         		String[] header = {"Meno","Priezvisko","Zárobok"};
         		String[][] obj;
         		obj = new String [zamestnanci.size()][];
@@ -1126,6 +1075,7 @@ public class Frame {
         			obj[k]= new String[3];
         			obj[k][0]=zamestnanci.get(k).getZamestnanec().getMeno();
         			obj[k][1]=zamestnanci.get(k).getZamestnanec().getPriezvisko();
+        			System.out.printf("Cena %d.:%f\n", k,zamestnanci.get(k).getCena());
         			obj[k][2]=zamestnanci.get(k).getCena().toString();
         			
         		}
@@ -1136,48 +1086,6 @@ public class Frame {
         		scrollPane_1 = scrollPanep;
                 scrollPane_1.setBounds(449, 273, 370, 301);
                 panel_3.add(scrollPane_1);
-        		
-        		/*
-        		String[] header = {"Osobné ID","Meno","Priezvisko","Maliar","Murár","Obkladaè","Betonár","Klampiar","Vodiè(bager)","Vodiè(nakladiak)","Architekt"
-        		};
-        		String[][] obj;
-        		obj = new String [zamestnanci.size()][];
-        		for(int i=0;i<zamestnanci.size();i++){
-        			obj[i]= new String[11];
-        			System.out.printf("Toto je èíslo ktoré chcem vytlaèi: %d", zamestnanci.get(i).getId());
-        			String j = zamestnanci.get(i).getId().toString();
-        			obj[i][0]=j;
-        			obj[i][1]=zamestnanci.get(i).getMeno();
-        			obj[i][2]=zamestnanci.get(i).getPriezvisko();
-        			if(zamestnanci.get(i).getMaliar()==true) obj[i][3]="Áno";
-        			else obj[i][3]="Nie";
-        			if(zamestnanci.get(i).getMurar()==true) obj[i][4]="Áno";
-        			else obj[i][4]="Nie";
-        			if(zamestnanci.get(i).getObkladac()==true) obj[i][5]="Áno";
-        			else obj[i][5]="Nie";
-        			if(zamestnanci.get(i).getBetonar()==true) obj[i][6]="Áno";
-        			else obj[i][6]="Nie";
-        			if(zamestnanci.get(i).getKlampiar()==true) obj[i][7]="Áno";
-        			else obj[i][7]="Nie";
-        			if(zamestnanci.get(i).getVodic_bager()==true) obj[i][8]="Áno";
-        			else obj[i][8]="Nie";
-        			if(zamestnanci.get(i).getVodic_nakladne()==true) obj[i][9]="Áno";
-        			else obj[i][9]="Nie";
-        			if(zamestnanci.get(i).getArchitekt()==true) obj[i][10]="Áno";
-        			else obj[i][10]="Nie";
-        			
-        		}
-        		
-        		JPanel panel = new JPanel();
-                panel.setLayout(null);
-        		// constructor of JTable with a fix number of objects
-        		JTable table = new JTable(obj, header);
-        		//panel.add(new JScrollPane(table));
-        		JScrollPane scroll = 
-                		new JScrollPane(table);
-                scroll.setBounds(12, 13, 1000, 1000);
-                panel.add(scroll);
-        		getContentPane().add(panel);*/
         		
         	}
         });
@@ -1265,9 +1173,11 @@ public class Frame {
 					e1.printStackTrace();
 				}
             	if(etapy.size()>0){
-            	label_3.setText(etapy.get(0).getId().toString()+" - "+etapy.get(0).getDatum().toString());
+            	SimpleDateFormat datum = new SimpleDateFormat("dd.MM.yyyy");
+            	label_3.setText(datum.format(etapy.get(0).getDatum()));
             	try {
-					lblNewLabel_2.setText(spustacE.getCenaEtapy(etapy.get(0).getId().toString()).toString());
+            		NumberFormat formatter = new DecimalFormat("#0.00");
+					lblNewLabel_2.setText(formatter.format(spustacE.getCenaEtapy(etapy.get(0).getId().toString())).toString() + " €");
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -1300,9 +1210,33 @@ public class Frame {
                 panel_3.add(scrollPane);
           
         		
-        		for(int k = 0;k<zamestnanci.size();k++)
-        			System.out.println(zamestnanci.get(k).getZamestnanec().getMeno() +" "+zamestnanci.get(k).getZamestnanec().getPriezvisko()+" "+zamestnanci.get(k).getCena()+"\n");
-        	}
+        		}
+            	else {
+            		
+            		label_3.setText("");
+                	
+    					lblNewLabel_2.setText("");
+    					
+            		
+            		String[] hlavicka = {"Meno","Priezvisko","Zárobok"};
+            		String[][] zlozky;
+            		zlozky=new String [1][];
+            			zlozky[0]= new String[3];
+            			zlozky[0][0]="";
+            			zlozky[0][1]="";
+            			zlozky[0][2]="";
+            		JTable table = new JTable(zlozky, hlavicka);
+            		//panel.add(new JScrollPane(table));
+            		JScrollPane scrollPanep = new JScrollPane(table);
+            		scrollPane = scrollPanep;
+                    scrollPane.setBounds(40, 273, 370, 301);
+                    panel_3.add(scrollPane);
+            			
+            		}
+            		
+            		
+            		
+            		
             	}
         });
         btnOk.setBounds(588, 56, 97, 25);
@@ -1374,7 +1308,6 @@ public class Frame {
 					e1.printStackTrace();
 				}
         		new Frame();
-        		System.out.printf("\n\n\n\n Tento som si vybral: %d",Integer.parseInt(pomocna));
         	}
         });
         btnZmaZamestnanca.setBounds(649, 291, 190, 47);
@@ -1414,9 +1347,8 @@ public class Frame {
 					}
                     
                     
-                    dialog.setTitle("Edit " + data.get(selectedRow).getMeno()+" "+data.get(selectedRow).getPriezvisko()+" "+ data.get(selectedRow).getMaliar()+" "+data.get(selectedRow).getMurar());
+                    dialog.setTitle("Edit " + data.get(selectedRow).getMeno()+" "+data.get(selectedRow).getPriezvisko());
                     
-                    System.out.printf("AHOJKAJ \n\n\n");
                     TableData data = ((AllTableModel) allTable.getModel()).getTableData().get(selectedRow);
                     List<TableData> tempData = new ArrayList<TableData>();
                     tempData.add(data);
